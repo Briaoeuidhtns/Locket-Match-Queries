@@ -6,7 +6,10 @@
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [com.layerware/hugsql "0.5.1"]
                  [mysql/mysql-connector-java "8.0.18"]
-                 [http.async.client "1.3.1"]]
+                 [clj-http "3.10.0"]
+                 [org.clojure/core.memoize "0.8.2"]
+                 [org.slf4j/slf4j-nop "2.0.0-alpha1"]
+                 [cheshire "5.9.0"]]
   :main ^:skip-aot locket-match-queries.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
