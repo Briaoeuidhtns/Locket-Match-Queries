@@ -19,10 +19,10 @@
 
 (defn proper-keyword
   ([name]
-   (recur nil name))
-  ([ns name]
-   (->> [ns name]
-        (map (string)))))
+   (-> name
+       (string/replace-first #"." (memfn toLowerCase))
+       (string/replace #"(?<!^)[A-Z]" (comp (partial str \-) (memfn toLowerCase)))
+       (string/replace #"[_]|\W+" "-"))))
 
 (defmulti process-result-node first)
 
@@ -43,20 +43,20 @@
      (identity response))))
 
 (def heroes (memo/ttl (fn
-                         []
-                         "Get hero mapping"
-                         (let [url (mkurl "IEconDOTA2_205790/GetHeroes/v1")
-                               response (http/get url {:as :json
-                                                       :query-params {:key (config :key)}})
-                               hero-list (get-in response [:body :result :heroes])]
-                           (into {} (map (juxt :id #(as-> % _
-                                                      (:name _)
-                                                      (string/replace _ #"_" "-")
-                                                      (re-matches #"(npc-dota-hero)-(.*)" _)
-                                                      (rest _)
-                                                      (apply keyword _)))
-                                         hero-list))))
-                       :ttl/threshold (-> 24 Duration/ofHours .toMillis)))
+                        []
+                        "Get hero mapping"
+                        (let [url (mkurl "IEconDOTA2_205790/GetHeroes/v1")
+                              response (http/get url {:as :json
+                                                      :query-params {:key (config :key)}})
+                              hero-list (get-in response [:body :result :heroes])]
+                          (into {} (map (juxt :id #(as-> % _
+                                                     (:name _)
+                                                     (re-matches #"(npc_dota_hero)_(.*)" _)
+                                                     (rest _)
+                                                     (map proper-keyword _)
+                                                     (apply keyword _)))
+                                        hero-list))))
+                      :ttl/threshold (-> 24 Duration/ofHours .toMillis)))
 
 (defn -main
   [& args]
