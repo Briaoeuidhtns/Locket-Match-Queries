@@ -24,12 +24,6 @@
        (string/replace #"(?<!^)[A-Z]" (comp (partial str \-) (memfn toLowerCase)))
        (string/replace #"[_]|\W+" "-"))))
 
-(defmulti process-result-node first)
-
-(defmethod process-result-node :hero-id
-  [[k hero-id]]
-  (map (heroes) v))
-
 (defn recent-matches
   "Get recent matches by player id"
   ([]
