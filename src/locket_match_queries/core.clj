@@ -56,4 +56,4 @@
   [& args]
   (let [{key :key
          account-id :account_id} config]
-    (pprint (heroes key))))
+    (pprint (heroes))))
