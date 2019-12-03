@@ -36,17 +36,32 @@
          response (http/get url {:as :json
                                  :query-params {:key (config :key)
                                                 :account_id id}})]
-    (let [matchList (get-in response [:body :result :matches])] 
-    		(map :match_id matchList)
+    (let [match-list (get-in response [:body :result :matches])] 
+    	match-list
     ))
   )
  )
 
+(defn get-match-data
+[match-id]
+   (let [url (mkurl "IDOTA2Match_570/GetMatchDetails/v1")
+         response (http/get url {:as :json
+                                 :query-params {:key (config :key)
+                                                :match_id match-id}})]
+    (let [match-info (get-in response [:body :result])] 
+    	match-info
+    ))
+)
+(defn extract-match-ids
+[result]
+	(map :match_id result)
+)
+
 (defn team-recent-matches
 	[& team-members]
-						;;(map (comp (partial into #{}) recent-matches) team-members) 
-						(into #{} (flatten (map recent-matches team-members))) 
+						(into #{} (flatten (map (comp extract-match-ids recent-matches) team-members)))
 )
+
 
 (def heroes (memo/ttl (fn
                         []
@@ -68,5 +83,6 @@
   [& args]
   (let [{key :key
          account-id :account_id} config]
-     (pprint (team-recent-matches 86383285 81729036 179132873))
+     ;(pprint  (get-match-data 5139790101))
+     ;(pprint  (team-recent-matches 86383285 81729036 179132873))
      ))
