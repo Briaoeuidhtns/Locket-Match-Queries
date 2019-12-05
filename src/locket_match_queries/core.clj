@@ -33,9 +33,18 @@
    (let [url (mkurl "IDOTA2Match_570/GetMatchHistory/v1")
          response (http/get url {:as :json
                                  :query-params {:key (config :key)
-                                                :account_id id}})]
+                                                :account_id id
+                                                :matches_requested 100}})]
      (let [match-list (get-in response [:body :result :matches])]
        match-list))))
+
+(defn extract-match-ids
+  [result]
+  (map :match_id result))
+
+(defn team-recent-matches
+  [team-members]
+  (into #{} (flatten (map (comp extract-match-ids recent-matches) team-members))))
 
 (defn get-match-data
   [match-id]
@@ -45,18 +54,19 @@
                                                :match_id match-id}})]
     (let [match-info (get-in response [:body :result])]
       match-info)))
-(defn extract-match-ids
-  [result]
-  (map :match_id result))
 
-(defn team-recent-matches
-  [& team-members]
-  (into #{} (flatten (map (comp extract-match-ids recent-matches) team-members))))
+(defn get-matches-data
+  [match_ids]
+  (map get-match-data match_ids))
+
+(defn extract-players
+  [result]
+  (map :players result))
 
 (def heroes (memo/ttl (fn
                         []
                         "Get hero mapping"
-                        (let [url (mkurl "IEconDOTA2_205790/GetHeroes/v1")
+                        (let [url (mkurl "IEconDOTA2_570/GetHeroes/v1")
                               response (http/get url {:as :json
                                                       :query-params {:key (config :key)}})
                               hero-list (get-in response [:body :result :heroes])]
@@ -71,8 +81,5 @@
 
 (defn -main
   [& args]
-  (let [{key :key
-         account-id :account_id} config]
-     ;(pprint  (get-match-data 5139790101))
-     ;(pprint  (team-recent-matches 86383285 81729036 179132873))
-    ))
+  (let 		[{key :key player_ids :player_ids} config
+          match-data  (-> "matchData.txt" slurp edn/read-string)]))
