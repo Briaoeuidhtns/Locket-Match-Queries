@@ -8,6 +8,7 @@
   (:import (java.time Duration))
   (:gen-class))
 
+;; Matthew
 (defn extract-match-ids
   [result]
   (map :match_id result))
@@ -17,10 +18,12 @@
   [team-members]
   (into #{} (flatten (map (comp extract-match-ids recent-matches) team-members))))
 
+;; Matthew
 (defn get-matches-data
   [match_ids]
   (map get-match-data match_ids))
 
+;; Matthew
 (defn extract-players
   [result]
   (map :players result))
