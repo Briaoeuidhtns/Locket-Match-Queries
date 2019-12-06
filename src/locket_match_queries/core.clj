@@ -10,36 +10,36 @@
   (:import (java.time Duration))
   (:gen-class))
 
-;; Matthew
 (defn extract-match-ids
+  {:author "Matthew"}
   [result]
   (map :match_id result))
 
-;; Brian
 (defn team-recent-matches
+  {:author "Brian"}
   [team-members]
   (into #{} (flatten (map (comp extract-match-ids recent-matches) team-members))))
 
-;; Matthew
 (defn get-matches-data
   [match_ids]
   (map get-match-data match_ids))
 
-;; Matthew
 (defn players
+  {:author "Matthew"}
   [result]
   (mapcat :players result))
 
 (def dummy-match-data (-> "matchData.txt" slurp edn/read-string))
 
-;; Brian
 (defn hero-stats
+  {:author "Brian"}
   [player-stats]
   (sort-by (comp - second)
            (set/rename-keys (frequencies (map :hero_id player-stats))
                             (heroes))))
-;; Brian
+
 (defn -main
+  {:author "Brian"}
   [& player-ids]
   (spit "stats.html"
         (rum/render-static-markup
