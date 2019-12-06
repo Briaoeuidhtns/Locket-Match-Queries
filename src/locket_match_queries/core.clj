@@ -4,7 +4,9 @@
             [clj-http.client :as http]
             [clojure.core.memoize :as memo]
             [locket-match-queries.api :refer :all]
-            )
+            [clojure.set :as set]
+            [locket-match-queries.web :as components]
+            [rum.core :as rum])
   (:import (java.time Duration))
   (:gen-class))
 
@@ -24,12 +26,21 @@
   (map get-match-data match_ids))
 
 ;; Matthew
-(defn extract-players
+(defn players
   [result]
-  (map :players result))
+  (mapcat :players result))
 
+(def dummy-match-data (-> "matchData.txt" slurp edn/read-string))
 
-;; (defn -main
-;;   [& args]
-;;   (let {key :key player_ids :player_ids} config
-;;           match-data  (-> "matchData.txt" slurp edn/read-string)))
+;; Brian
+(defn hero-stats
+  [player-stats]
+  (sort-by (comp - second)
+           (set/rename-keys (frequencies (map :hero_id player-stats))
+                            (heroes))))
+
+(defn -main
+  [& player-ids]
+  (spit "stats.html"
+        (rum/render-static-markup
+         (components/hero-stat-list (hero-stats (players dummy-match-data))))))

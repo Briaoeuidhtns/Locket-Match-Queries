@@ -4,6 +4,10 @@
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/"}
   :dependencies [[org.clojure/clojure "1.10.0"]
+                 [rum "0.11.4" :exclusions [cljsjs/react cljsjs/react-dom sablono]]
+                 [compojure "1.6.1"]
+                 [org.clojure/data.codec "0.1.1"]
+                 [byte-streams "0.2.4"]
                  [com.layerware/hugsql "0.5.1"]
                  [mysql/mysql-connector-java "8.0.18"]
                  [clj-http "3.10.0"]
