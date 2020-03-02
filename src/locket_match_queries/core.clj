@@ -63,6 +63,10 @@
   [result]
   (map :players result))
 
+(defn extract-heroes
+[result]
+(map :hero_id result))
+
 (def heroes (memo/ttl (fn
                         []
                         "Get hero mapping"
@@ -82,4 +86,10 @@
 (defn -main
   [& args]
   (let 		[{key :key player_ids :player_ids} config
-          match-data  (-> "matchData.txt" slurp edn/read-string)]))
+          match-data  (-> "matchData.json" slurp edn/read-string)
+          player-data  (-> "playerData.json" slurp edn/read-string)
+          hero-data  (-> "heroData.json" slurp edn/read-string)]
+  (pprint(extract-heroes (flatten player-data)))
+  ;(pprint (pr-str hero-data))
+  )
+  )
