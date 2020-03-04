@@ -2,67 +2,36 @@
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clj-http.client :as http]
-            [clojure.pprint :refer [pprint]]
             [clojure.core.memoize :as memo]
-            [clojure.walk :refer [postwalk]]
-            [clojure.string :as string])
+            [locket-match-queries.api :refer :all]
+            [clojure.set :as set]
+            [locket-match-queries.web :as components]
+            [rum.core :as rum])
   (:import (java.time Duration))
   (:gen-class))
 
-(def config (-> "config.edn"
-                io/resource
-                io/reader
-                java.io.PushbackReader.
-                edn/read))
-
-(def mkurl (partial format "https://api.steampowered.com/%s"))
-
-(defn proper-keyword
-  ([name]
-   (-> name
-       (string/replace-first #"." (memfn toLowerCase))
-       (string/replace #"(?<!^)[A-Z]" (comp (partial str \-) (memfn toLowerCase)))
-       (string/replace #"[_]|\W+" "-"))))
-
-(defn recent-matches
-  "Get recent matches by player id"
-  ([]
-   (recent-matches nil))
-
-  ([id]
-   (let [url (mkurl "IDOTA2Match_570/GetMatchHistory/v1")
-         response (http/get url {:as :json
-                                 :query-params {:key (config :key)
-                                                :account_id id
-                                                :matches_requested 100}})]
-     (let [match-list (get-in response [:body :result :matches])]
-       match-list))))
-
 (defn extract-match-ids
+  {:author "Matthew"}
   [result]
   (map :match_id result))
 
 (defn team-recent-matches
+  {:author "Brian"}
   [team-members]
   (into #{} (flatten (map (comp extract-match-ids recent-matches) team-members))))
-
-(defn get-match-data
-  [match-id]
-  (let [url (mkurl "IDOTA2Match_570/GetMatchDetails/v1")
-        response (http/get url {:as :json
-                                :query-params {:key (config :key)
-                                               :match_id match-id}})]
-    (let [match-info (get-in response [:body :result])]
-      match-info)))
 
 (defn get-matches-data
   [match_ids]
   (map get-match-data match_ids))
 
-(defn extract-players
+(defn players
+  {:author "Matthew"}
   [result]
-  (map :players result))
+  (mapcat :players result))
 
+(def dummy-match-data (-> "matchData.txt" slurp edn/read-string))
+
+;<<<<<<< HEAD
 (defn extract-heroes
 [result]
 (map :hero_id result))
@@ -93,3 +62,18 @@
   ;(pprint (pr-str hero-data))
   )
   )
+;=======
+;(defn hero-stats
+;  {:author "Brian"}
+;  [player-stats]
+;  (sort-by (comp - second)
+;           (set/rename-keys (frequencies (map :hero_id player-stats))
+;                            (heroes))))
+
+;(defn -main
+;  {:author "Brian"}
+;  [& player-ids]
+;  (spit "stats.html"
+;        (rum/render-static-markup
+;         (components/hero-stat-list (hero-stats (players dummy-match-data))))))
+;>>>>>>> 132bb02fc8be956515d2e0026a99bbac3adf767e
