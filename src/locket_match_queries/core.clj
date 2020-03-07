@@ -45,13 +45,17 @@
 
 (defn create-hero-entry
 [hero-pair & left]
-					(clojure.pprint/pprint (first hero-pair))
-					(clojure.pprint/pprint (second (re-find #":npc-dota-hero\/(.+)" (str (second hero-pair)))))
+	(let [id (first hero-pair)
+							hero-name (second (re-find #":npc-dota-hero\/(.+)" (str (second hero-pair))))]
+					(jdbc/insert! db-spec :Heros {:heroID id :name hero-name})
+	)
 	(if left (apply create-hero-entry left))
 )
 
 (defn populate-heros-table
 [hero-data]
+	;; clear the heros table and then populate TODO make smarter
+		(jdbc/delete! db-spec :Heros ["1 = 1"])   
 		(apply create-hero-entry (seq hero-data))
 )
 
@@ -61,7 +65,6 @@
   (let 		[match-data  (-> "matchData.json" slurp edn/read-string)
           player-data  (-> "playerData.json" slurp edn/read-string)
           hero-data  (-> "heroData.json" slurp edn/read-string)]
- 	(clojure.pprint/pprint (map :result (jdbc/query db-spec ["SELECT 3*5 AS result"])))
  	(populate-heros-table hero-data)
   ;(clojure.pprint/pprint(extract-heroes (flatten player-data)))
   ;(pprint (pr-str hero-data))
