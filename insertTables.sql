@@ -19,7 +19,7 @@ USE `mydb` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Match` (
   `matchID` INT NOT NULL,
-  `winner` CHAR(1) NULL,
+  `radiantWin` TINYINT NULL,
   `duration` INT NULL,
   `towerStatusDire` INT NULL,
   `towerStatusRadiant` INT NULL,
@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Match` (
   `firstBloodTime` INT NULL,
   `radiantScore` INT NULL,
   `direScore` INT NULL,
+  `pickBan` INT NULL,
   PRIMARY KEY (`matchID`))
 ENGINE = InnoDB;
 
@@ -41,11 +42,11 @@ CREATE TABLE IF NOT EXISTS `mydb`.`LobbyInfo` (
   `Season` INT NULL,
   `startTime` INT NULL,
   `lobbyType` INT NULL,
-  `Match_matchID` INT NOT NULL,
+  `matchID` INT NOT NULL,
   PRIMARY KEY (`server`),
-  INDEX `fk_LobbyInfo_Match_idx` (`Match_matchID` ASC),
+  INDEX `fk_LobbyInfo_Match_idx` (`matchID` ASC),
   CONSTRAINT `fk_LobbyInfo_Match`
-    FOREIGN KEY (`Match_matchID`)
+    FOREIGN KEY (`matchID`)
     REFERENCES `mydb`.`Match` (`matchID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -53,16 +54,32 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`playerInfo`
+-- Table `mydb`.`Player Info`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`playerInfo` (
+CREATE TABLE IF NOT EXISTS `mydb`.`Player Info` (
+  `playerSlot` INT NOT NULL,
+  `isRadiant` TINYINT NULL,
+  `item0` INT NULL,
+  `item1` INT NULL,
+  `item2` INT NULL,
+  `item3` INT NULL,
+  `item4` INT NULL,
+  `item5` INT NULL,
+  `kills` INT NULL,
+  `deaths` INT NULL,
+  `assists` INT NULL,
+  `leaverStatus` INT NULL,
+  `lastHits` INT NULL,
+  `denies` INT NULL,
+  `goldPerMinute` DOUBLE NULL,
+  `xpPerMinute` DOUBLE NULL,
   `playerID` INT NOT NULL,
-  `Match_matchID` INT NOT NULL,
-  `side` CHAR(1) NULL,
+  `matchID` INT NOT NULL,
+  `heroID` INT NULL,
   PRIMARY KEY (`playerID`),
-  INDEX `fk_playerInfo_Match1_idx` (`Match_matchID` ASC),
-  CONSTRAINT `fk_playerInfo_Match1`
-    FOREIGN KEY (`Match_matchID`)
+  INDEX `fk_Player Info_Match1_idx` (`matchID` ASC),
+  CONSTRAINT `fk_Player Info_Match1`
+    FOREIGN KEY (`matchID`)
     REFERENCES `mydb`.`Match` (`matchID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -70,21 +87,44 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`playerMatch`
+-- Table `mydb`.`Heros`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`playerMatch` (
-  `playerInfo_playerID` INT NOT NULL,
-  `Match_matchID` INT NOT NULL,
-  INDEX `fk_playerMatch_playerInfo1_idx` (`playerInfo_playerID` ASC),
-  INDEX `fk_playerMatch_Match1_idx` (`Match_matchID` ASC),
-  CONSTRAINT `fk_playerMatch_playerInfo1`
-    FOREIGN KEY (`playerInfo_playerID`)
-    REFERENCES `mydb`.`playerInfo` (`playerID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_playerMatch_Match1`
-    FOREIGN KEY (`Match_matchID`)
+CREATE TABLE IF NOT EXISTS `mydb`.`Heros` (
+  `heroID` INT NOT NULL,
+  `name` VARCHAR(45) NULL,
+  PRIMARY KEY (`heroID`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`PickBan`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`PickBan` (
+  `matchID` INT NOT NULL,
+  INDEX `fk_PickBan_Match1_idx` (`matchID` ASC),
+  PRIMARY KEY (`matchID`),
+  CONSTRAINT `fk_PickBan_Match1`
+    FOREIGN KEY (`matchID`)
     REFERENCES `mydb`.`Match` (`matchID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`PickBanEntry`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`PickBanEntry` (
+  `isPick` TINYINT NOT NULL,
+  `heroID` INT NULL,
+  `isRadiant` TINYINT NULL,
+  `order` INT NULL,
+  `matchID` INT NOT NULL,
+  PRIMARY KEY (`isPick`),
+  INDEX `fk_PickBanEntry_PickBan1_idx` (`matchID` ASC),
+  CONSTRAINT `fk_PickBanEntry_PickBan1`
+    FOREIGN KEY (`matchID`)
+    REFERENCES `mydb`.`PickBan` (`matchID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
