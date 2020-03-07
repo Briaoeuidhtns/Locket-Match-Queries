@@ -33,22 +33,6 @@
     (let [match-info (get-in response [:body :result])]
       match-info)))
 
-(def heroes (memo/ttl (fn
-                        []
-                        "Get hero mapping"
-                        {:author "Brian"}
-                        (let [url (mkurl "IEconDOTA2_570/GetHeroes/v1")
-                              response (http/get url {:as :json
-                                                      :query-params {:key (config :key)}})
-                              hero-list (get-in response [:body :result :heroes])]
-                          (into {} (map (juxt :id #(as-> % _
-                                                     (:name _)
-                                                     (re-matches #"(npc_dota_hero)_(.*)" _)
-                                                     (rest _)
-                                                     (map proper-keyword _)
-                                                     (apply keyword _)))
-                                        hero-list))))
-                      :ttl/threshold (-> 24 Duration/ofHours .toMillis)))
 
 (defn recent-matches
   "Get recent matches by player id"

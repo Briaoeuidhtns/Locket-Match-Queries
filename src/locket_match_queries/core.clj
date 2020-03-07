@@ -6,7 +6,8 @@
             [locket-match-queries.api :refer :all]
             [clojure.set :as set]
             [locket-match-queries.web :as components]
-            [rum.core :as rum])
+            [rum.core :as rum]
+            [clojure.java.jdbc :as jdbc])
   (:import (java.time Duration))
   (:gen-class))
 
@@ -29,39 +30,44 @@
   [result]
   (mapcat :players result))
 
-(def dummy-match-data (-> "matchData.txt" slurp edn/read-string))
+(def dummy-match-data (-> "matchData.json" slurp edn/read-string))
+
+(def db-spec
+  {:dbtype "mysql"
+   :dbname "mydb"
+   :user (config :db_user)
+   :password (config :db_pass)})
 
 ;<<<<<<< HEAD
 (defn extract-heroes
 [result]
 (map :hero_id result))
 
-(def heroes (memo/ttl (fn
-                        []
-                        "Get hero mapping"
-                        (let [url (mkurl "IEconDOTA2_570/GetHeroes/v1")
-                              response (http/get url {:as :json
-                                                      :query-params {:key (config :key)}})
-                              hero-list (get-in response [:body :result :heroes])]
-                          (into {} (map (juxt :id #(as-> % _
-                                                     (:name _)
-                                                     (re-matches #"(npc_dota_hero)_(.*)" _)
-                                                     (rest _)
-                                                     (map proper-keyword _)
-                                                     (apply keyword _)))
-                                        hero-list))))
-                      :ttl/threshold (-> 24 Duration/ofHours .toMillis)))
+(defn create-hero-entry
+[hero-pair & left]
+					(clojure.pprint/pprint (first hero-pair))
+					(clojure.pprint/pprint (second (re-find #":npc-dota-hero\/(.+)" (str (second hero-pair)))))
+	(if left (apply create-hero-entry left))
+)
+
+(defn populate-heros-table
+[hero-data]
+		(apply create-hero-entry (seq hero-data))
+)
+
 
 (defn -main
   [& args]
-  (let 		[{key :key player_ids :player_ids} config
-          match-data  (-> "matchData.json" slurp edn/read-string)
+  (let 		[match-data  (-> "matchData.json" slurp edn/read-string)
           player-data  (-> "playerData.json" slurp edn/read-string)
           hero-data  (-> "heroData.json" slurp edn/read-string)]
-  (pprint(extract-heroes (flatten player-data)))
+ 	(clojure.pprint/pprint (map :result (jdbc/query db-spec ["SELECT 3*5 AS result"])))
+ 	(populate-heros-table hero-data)
+  ;(clojure.pprint/pprint(extract-heroes (flatten player-data)))
   ;(pprint (pr-str hero-data))
   )
   )
+
 ;=======
 ;(defn hero-stats
 ;  {:author "Brian"}

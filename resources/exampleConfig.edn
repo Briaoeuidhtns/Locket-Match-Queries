@@ -1,0 +1,5 @@
+{:key "api key",
+ :player_ids [id1 id2 id3]
+ :db_user "name"
+ :db_pass "password"
+ }
