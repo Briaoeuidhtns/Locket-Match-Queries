@@ -12,7 +12,7 @@
        (format "images/heroes/%s.png")
        io/resource
        (#(or % (io/resource "images/placeholder.png")))
-       io/file
+       io/reader
        byte-streams/to-byte-array
        b64/encode
        slurp
