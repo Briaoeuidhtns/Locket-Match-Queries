@@ -34,7 +34,7 @@
 
 (def db-spec
   {:dbtype "mysql"
-   :dbname "mydb"
+   :dbname (config :db_name)
    :user (config :db_user)
    :password (config :db_pass)})
 
