@@ -30,7 +30,7 @@
   [result]
   (mapcat :players result))
 
-(def dummy-match-data (-> "matchData.json" slurp edn/read-string))
+(def dummy-match-data (-> "matchData.edn" slurp edn/read-string))
 
 (def db-spec
   {:dbtype "mysql"
@@ -62,12 +62,10 @@
 
 (defn -main
   [& args]
-  (let 		[match-data  (-> "matchData.json" slurp edn/read-string)
-          player-data  (-> "playerData.json" slurp edn/read-string)
-          hero-data  (-> "heroData.json" slurp edn/read-string)]
+  (let 		[match-data  (-> "matchData.edn" slurp edn/read-string)
+          player-data  (-> "playerData.edn" slurp edn/read-string)
+          hero-data  (-> "heroData.edn" slurp edn/read-string)]
  	(populate-heros-table hero-data)
-  ;(clojure.pprint/pprint(extract-heroes (flatten player-data)))
-  ;(pprint (pr-str hero-data))
   )
   )
 
