@@ -1,5 +1,5 @@
 (defproject locket-match-queries "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
+  :description "Dota drafting tool for use against ametuer teams"
   :url "https://github.com/matthewReff/Locket-Match-Queries"
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/"}

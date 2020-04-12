@@ -48,9 +48,10 @@
 	(let [id (first hero-pair)
 							hero-name (second (re-find #":npc-dota-hero\/(.+)" (str (second hero-pair))))]
 					(jdbc/insert! db-spec :Heros {:heroID id :name hero-name})
+					(if left (apply create-hero-entry left)
 	)
-	(if left (apply create-hero-entry left))
 )
+	)
 
 (defn populate-heros-table
 [hero-data]
