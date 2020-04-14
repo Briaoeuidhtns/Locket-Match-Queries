@@ -3,5 +3,5 @@
  :db_name "mydb"
  :db_user "name"
  :db_pass "password"
- :db_ip "ip"
+ :db_ip "localhost"
  }
