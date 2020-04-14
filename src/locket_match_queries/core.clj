@@ -36,7 +36,9 @@
   {:dbtype "mysql"
    :dbname (config :db_name)
    :user (config :db_user)
-   :password (config :db_pass)})
+   :password (config :db_pass)
+   :host (config :db_ip)
+   })
 
 ;<<<<<<< HEAD
 (defn extract-heroes
