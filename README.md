@@ -2,27 +2,33 @@ Drafting and stats tool for use against ametuer teams. Exisiting stats websites 
 
 Project originally a partner project for the Programming Languages class at SDSMT by (Matthew Reff)[https://github.com/matthewReff] and (Brian Brunner)[https://github.com/Briaoeuidhtns]
 
-# Get mysql
-$ sudo apt install mysql-server
+# Setup
 
-# Create a usable config, use the same names you put in the config in your sql scripts
-$ cd resources
-$ cp exampleConfig.edn config.edn
-$ {editor} config.edn
+### Get mysql
+`$ sudo apt install mysql-server`
 
-# Be sure to change the database name in the sql script, if you don't, the default is "mydb"
+### Create a usable config, use the same names you put in the config in your sql scripts
+`$ cd resources`
 
-$ {editor} insertTables.sql
+`$ cp exampleConfig.edn config.edn`
 
-# Add database, create a user and grant it the permissions needed
+`$ {editor} config.edn`
 
-$ sudo mysql
+ Be sure to either change the database name in insertTables.sql or use the default "mydb" in the code below
 
-mysql> source insertTables.sql
+`$ {editor} insertTables.sql`
 
-# Look into password policy if your password isn't considered valid. You'll probably want to use localhost.
+### Add database, create a user and grant it the permissions needed
 
-mysql> CREATE USER '{:db_user}'@'{ip}' IDENTIFIED BY '{password}';
+`$ sudo mysql`
 
-mysql> GRANT ALL PRIVILEGES ON {:db_name}.* TO '{:db_user}'@'{ip}';
+`mysql> source insertTables.sql`
+
+Look into password policy if your password isn't considered valid
+
+You'll probably want to keep localhost as the ip unless you have a remote server set up
+
+`mysql> CREATE USER '{:db_user}'@'{ip}' IDENTIFIED BY '{password}';`
+
+`mysql> GRANT ALL PRIVILEGES ON {:db_name}.* TO '{:db_user}'@'{ip}';`
 
