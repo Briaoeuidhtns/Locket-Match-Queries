@@ -1,6 +1,6 @@
 Drafting and stats tool for use against ametuer teams. Exisiting stats websites can go into detail about teams of professional players or individual ametuer players, but this project allows analysis of teams of ametuer players.
 
-Project originally a partner project for the Programming Languages class at SDSMT by (Matthew Reff)[https://github.com/matthewReff] and (Brian Brunner)[https://github.com/Briaoeuidhtns]
+Project originally a partner project for the Programming Languages class at SDSMT by [Matthew Reff](https://github.com/matthewReff) and [Brian Brunner](https://github.com/Briaoeuidhtns)
 
 # Setup
 
@@ -31,4 +31,3 @@ You'll probably want to keep localhost as the ip unless you have a remote server
 `mysql> CREATE USER '{:db_user}'@'{ip}' IDENTIFIED BY '{password}';`
 
 `mysql> GRANT ALL PRIVILEGES ON {:db_name}.* TO '{:db_user}'@'{ip}';`
-
