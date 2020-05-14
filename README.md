@@ -31,3 +31,17 @@ You'll probably want to keep localhost as the ip unless you have a remote server
 `mysql> CREATE USER '{:db_user}'@'{ip}' IDENTIFIED BY '{password}';`
 
 `mysql> GRANT ALL PRIVILEGES ON {:db_name}.* TO '{:db_user}'@'{ip}';`
+
+### If you have a problem with server time zone values
+
+`$ {editor} ~/../../etc/mysql/my.cnf`
+
+Add the following lines to the bottom of your sql config file
+
+>[mysqld]
+>
+>default-time-zone='+00:00'
+
+Now restart your mysql server
+
+`$ service mysql restart`
