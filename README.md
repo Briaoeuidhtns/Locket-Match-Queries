@@ -28,9 +28,16 @@ Look into password policy if your password isn't considered valid
 
 You'll probably want to keep localhost as the ip unless you have a remote server set up
 
-`mysql> CREATE USER '{:db_user}'@'{ip}' IDENTIFIED BY '{password}';`
+`mysql> CREATE USER '{:db_user}'@'{:db_ip}' IDENTIFIED BY '{:db_pass}';`
 
-`mysql> GRANT ALL PRIVILEGES ON {:db_name}.* TO '{:db_user}'@'{ip}';`
+`mysql> GRANT ALL PRIVILEGES ON {:db_name}.* TO '{:db_user}'@'{:db_ip}';`
+
+If you will be connecting from an ip other than localhost you'll need to allow connections from outside.
+Make sure that you give as few permissions as possible to anything that can be accessed from the outside.
+
+`mysql> CREATE USER '{:db_user}'@'%' IDENTIFIED BY '{db_pass}';`
+
+`mysql> GRANT ALL PRIVILEGES ON {:db_name}.* TO '{:db_user}'@'%';`
 
 ### If you have a problem with server time zone values
 
