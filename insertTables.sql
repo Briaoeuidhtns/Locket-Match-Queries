@@ -15,20 +15,20 @@ CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
 USE `mydb` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`Match`
+-- Table `mydb`.`MatchTable`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`Match` (
+CREATE TABLE IF NOT EXISTS `mydb`.`MatchTable` (
   `matchID` INT NOT NULL,
-  `radiantWin` TINYINT NULL,
-  `duration` INT NULL,
-  `towerStatusDire` INT NULL,
-  `towerStatusRadiant` INT NULL,
-  `barracksStatusDire` INT NULL,
-  `barracksStatusRadiant` INT NULL,
-  `firstBloodTime` INT NULL,
-  `radiantScore` INT NULL,
-  `direScore` INT NULL,
-  `pickBan` INT NULL,
+  `radiantWin` TINYINT NOT NULL,
+  `duration` INT NOT NULL,
+  `towerStatusDire` INT NOT NULL,
+  `towerStatusRadiant` INT NOT NULL,
+  `barracksStatusDire` INT NOT NULL,
+  `barracksStatusRadiant` INT NOT NULL,
+  `firstBloodTime` INT NOT NULL,
+  `radiantScore` INT NOT NULL,
+  `direScore` INT NOT NULL,
+  `pickBan` INT NOT NULL,
   PRIMARY KEY (`matchID`))
 ENGINE = InnoDB;
 
@@ -40,14 +40,14 @@ CREATE TABLE IF NOT EXISTS `mydb`.`LobbyInfo` (
   `server` VARCHAR(45) NOT NULL,
   `leagueID` INT NULL,
   `Season` INT NULL,
-  `startTime` INT NULL,
+  `startTime` INT NOT NULL,
   `lobbyType` INT NULL,
   `matchID` INT NOT NULL,
-  PRIMARY KEY (`server`),
   INDEX `fk_LobbyInfo_Match_idx` (`matchID` ASC),
+  PRIMARY KEY (`matchID`),
   CONSTRAINT `fk_LobbyInfo_Match`
     FOREIGN KEY (`matchID`)
-    REFERENCES `mydb`.`Match` (`matchID`)
+    REFERENCES `mydb`.`MatchTable` (`matchID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -58,29 +58,33 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Player Info` (
   `playerSlot` INT NOT NULL,
-  `isRadiant` TINYINT NULL,
+  `isRadiant` TINYINT NOT NULL,
   `item0` INT NULL,
   `item1` INT NULL,
   `item2` INT NULL,
   `item3` INT NULL,
   `item4` INT NULL,
   `item5` INT NULL,
-  `kills` INT NULL,
-  `deaths` INT NULL,
-  `assists` INT NULL,
-  `leaverStatus` INT NULL,
-  `lastHits` INT NULL,
-  `denies` INT NULL,
-  `goldPerMinute` DOUBLE NULL,
-  `xpPerMinute` DOUBLE NULL,
+  `kills` INT NOT NULL,
+  `deaths` INT NOT NULL,
+  `assists` INT NOT NULL,
+  `leaverStatus` INT NOT NULL,
+  `lastHits` INT NOT NULL,
+  `denies` INT NOT NULL,
+  `goldPerMinute` DOUBLE NOT NULL,
+  `xpPerMinute` DOUBLE NOT NULL,
   `playerID` INT NOT NULL,
   `matchID` INT NOT NULL,
-  `heroID` INT NULL,
-  PRIMARY KEY (`playerID`),
+  `heroID` INT NOT NULL,
+  `backpackItem1` INT NULL,
+  `backpackItem2` INT NULL,
+  `backpackItem3` INT NULL,
+  `backpackItem4` INT NULL,
+  PRIMARY KEY (`playerID`, `matchID`),
   INDEX `fk_Player Info_Match1_idx` (`matchID` ASC),
   CONSTRAINT `fk_Player Info_Match1`
     FOREIGN KEY (`matchID`)
-    REFERENCES `mydb`.`Match` (`matchID`)
+    REFERENCES `mydb`.`MatchTable` (`matchID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -91,7 +95,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`Heros` (
   `heroID` INT NOT NULL,
-  `name` VARCHAR(45) NULL,
+  `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`heroID`))
 ENGINE = InnoDB;
 
@@ -105,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`PickBan` (
   PRIMARY KEY (`matchID`),
   CONSTRAINT `fk_PickBan_Match1`
     FOREIGN KEY (`matchID`)
-    REFERENCES `mydb`.`Match` (`matchID`)
+    REFERENCES `mydb`.`MatchTable` (`matchID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -116,9 +120,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`PickBanEntry` (
   `isPick` TINYINT NOT NULL,
-  `heroID` INT NULL,
-  `isRadiant` TINYINT NULL,
-  `order` INT NULL,
+  `heroID` INT NOT NULL,
+  `isRadiant` TINYINT NOT NULL,
+  `order` INT NOT NULL,
   `matchID` INT NOT NULL,
   PRIMARY KEY (`isPick`),
   INDEX `fk_PickBanEntry_PickBan1_idx` (`matchID` ASC),
