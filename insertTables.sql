@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`lobby_info` (
   `match_id` BIGINT(20) NOT NULL,
   INDEX `fk_LobbyInfo_Match_idx` (`match_id` ASC) VISIBLE,
   PRIMARY KEY (`match_id`),
-  CONSTRAINT `fk_LobbyInfo_Match`
+  CONSTRAINT ``
     FOREIGN KEY (`match_id`)
     REFERENCES `mydb`.`match_table` (`match_id`)
     ON DELETE NO ACTION
