@@ -37,15 +37,14 @@ ENGINE = InnoDB;
 -- Table `mydb`.`lobby_info`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`lobby_info` (
-  `server` VARCHAR(45) NOT NULL,
+  `server` VARCHAR(45) CHARACTER SET 'ascii' NOT NULL,
   `league_id` INT NULL,
   `season` INT NULL,
   `start_time` INT NOT NULL,
   `lobby_type` INT NULL,
   `match_id` BIGINT(20) NOT NULL,
-  INDEX `fk_LobbyInfo_Match_idx` (`match_id` ASC) VISIBLE,
-  PRIMARY KEY (`match_id`),
-  CONSTRAINT ``
+  INDEX `fk_lobby_info_match_table1_idx` (`match_id` ASC) VISIBLE,
+  CONSTRAINT `fk_lobby_info_match_table1`
     FOREIGN KEY (`match_id`)
     REFERENCES `mydb`.`match_table` (`match_id`)
     ON DELETE NO ACTION
@@ -74,16 +73,16 @@ CREATE TABLE IF NOT EXISTS `mydb`.`player_info` (
   `gold_per_min` DOUBLE NOT NULL,
   `xp_per_min` DOUBLE NOT NULL,
   `player_id` INT NOT NULL,
-  `match_id` BIGINT(20) NOT NULL,
   `hero_id` INT NOT NULL,
   `backpack_1` INT NULL,
   `backpack_2` INT NULL,
   `backpack_3` INT NULL,
   `backpack_4` INT NULL,
-  PRIMARY KEY (`player_id`, `match_id`),
-  INDEX `fk_Player Info_Match1_idx` (`match_id` ASC) VISIBLE,
-  CONSTRAINT `fk_Player Info_Match1`
-    FOREIGN KEY (`match_id`)
+  `match_table_match_id` BIGINT(20) NOT NULL,
+  PRIMARY KEY (`player_id`),
+  INDEX `fk_player_info_match_table1_idx` (`match_table_match_id` ASC) VISIBLE,
+  CONSTRAINT `fk_player_info_match_table1`
+    FOREIGN KEY (`match_table_match_id`)
     REFERENCES `mydb`.`match_table` (`match_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -105,9 +104,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`pick_ban` (
   `match_id` BIGINT(20) NOT NULL,
-  INDEX `fk_PickBan_Match1_idx` (`match_id` ASC) VISIBLE,
+  INDEX `fk_pick_ban_match_table1_idx` (`match_id` ASC) VISIBLE,
   PRIMARY KEY (`match_id`),
-  CONSTRAINT `fk_PickBan_Match1`
+  CONSTRAINT `fk_pick_ban_match_table1`
     FOREIGN KEY (`match_id`)
     REFERENCES `mydb`.`match_table` (`match_id`)
     ON DELETE NO ACTION
@@ -124,9 +123,9 @@ CREATE TABLE IF NOT EXISTS `mydb`.`pick_ban_entry` (
   `is_radiant` TINYINT NOT NULL,
   `order` INT NOT NULL,
   `match_id` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`is_pick`),
-  INDEX `fk_PickBanEntry_PickBan1_idx` (`match_id` ASC) VISIBLE,
-  CONSTRAINT `fk_PickBanEntry_PickBan1`
+  INDEX `fk_pick_ban_entry_pick_ban1_idx` (`match_id` ASC) VISIBLE,
+  PRIMARY KEY (`match_id`, `order`),
+  CONSTRAINT `fk_pick_ban_entry_pick_ban1`
     FOREIGN KEY (`match_id`)
     REFERENCES `mydb`.`pick_ban` (`match_id`)
     ON DELETE NO ACTION
