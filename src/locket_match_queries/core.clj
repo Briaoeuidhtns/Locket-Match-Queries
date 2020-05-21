@@ -4,6 +4,7 @@
             [clj-http.client :as http]
             [clojure.core.memoize :as memo]
             [locket-match-queries.api :refer :all]
+            [locket-match-queries.mock_data :refer :all]
             [clojure.set :as set]
             [locket-match-queries.web :as components]
             [rum.core :as rum]
@@ -30,60 +31,77 @@
   [result]
   (mapcat :players result))
 
-(def dummy-match-data (-> "matchData.edn" slurp edn/read-string))
-
 (def db-spec
   {:dbtype "mysql"
    :dbname (config :db_name)
    :user (config :db_user)
    :password (config :db_pass)
-   :host (config :db_ip)
-   })
-
-;<<<<<<< HEAD
-(defn extract-heroes
-[result]
-(map :hero_id result))
+   :host (config :db_ip)})
 
 (defn create-hero-entry
-[hero-pair & left]
-	(let [id (first hero-pair)
-							hero-name (second (re-find #":npc-dota-hero\/(.+)" (str (second hero-pair))))]
-					(jdbc/insert! db-spec :Heros {:heroID id :name hero-name})
-					(if left (apply create-hero-entry left)
-	)
-)
-	)
+  [hero-pair]
+  (let [id (first hero-pair)
+        hero-name (second (re-find #":npc-dota-hero\/(.+)" (str (second hero-pair))))]
+    (jdbc/insert! db-spec :hero {:hero_id id :name hero-name})))
 
-(defn populate-heros-table
-[hero-data]
-	;; clear the heros table and then populate TODO make smarter
-		(jdbc/delete! db-spec :Heros ["1 = 1"])   
-		(apply create-hero-entry (seq hero-data))
-)
+(defn populate-hero-table
+  ([hero-data]
+	;; clear the heros table and then populate, TODO make smarter
+   (jdbc/delete! db-spec :hero ["1 = 1"])
+   (doall (for [this-data (seq hero-data)] (create-hero-entry this-data)))))
+
+(defn create-item-entry
+  [this-item-data]
+  (let [itemID (get this-item-data :id)
+        name (get this-item-data :name)
+        cost (get this-item-data :cost)
+        secret_shop (get this-item-data :secret_shop)
+        side_shop (get this-item-data :side_shop)
+        recipe (get this-item-data :recipe)]
+
+    (jdbc/insert! db-spec :item {:item_id itemID :name name
+                                 :cost cost :secret_shop secret_shop
+                                 :side_shop side_shop :recipe recipe})))
+
+(defn populate-item-table
+  [item-data]
+	;; clear the heros table and then populate, TODO make smarter
+  (jdbc/delete! db-spec :item ["1 = 1"])
+  (doall (for [this-data (seq item-data)] (create-item-entry this-data))))
+
+(defn populate-match-table
+  [match-data]
+  (jdbc/insert! db-spec :MatchTable {:matchID (get match-data :match_id) :radiantWin (get match-data :radiant_win)
+                                     :duration (get match-data :duration) :firstBloodTime (get match-data :first_blood_time)
+                                     :towerStatusDire (get match-data :tower_status_dire) :towerStatusRadiant (get match-data :tower_status_radiant)
+                                     :barracksStatusDire (get match-data :barracks_status_dire) :barracksStatusRadiant (get match-data :barracks_status_radiant)
+                                     :radiantScore (get match-data :radiant_score) :direScore (get match-data :dire_score)
+                                     :pickBan 1}))
+
+;(defn populate-match-table
+;[match-data]
+;(jdbc/insert! db-spec :Match {
+;	:matchID (get match-data :match_id)}))
+
+;(defn populate-playerInfo-table
+;[data]
+;(jdbc/insert! db-spec :Match {:playerSlot {} :isRadiant {} :item0 {} :item1 {} :item2 {}
+; :item3 {} :item4 {} :item5 {} :kills {} :deaths {} :assists {} :leaverStatus {}
+; :lastHits {} :denies {} :goldPerMinute {} :xpPerMinute {} :playerID {} :matchID {}
+; :heroID {}})
+;)
 
 
 (defn -main
   [& args]
-  (let 		[match-data  (-> "matchData.edn" slurp edn/read-string)
-          player-data  (-> "playerData.edn" slurp edn/read-string)
-          hero-data  (-> "heroData.edn" slurp edn/read-string)]
- 	(populate-heros-table hero-data)
-  )
-  )
+  (do
+ 	(populate-hero-table (get edns :hero-data))
+  (populate-item-table (get edns :item-data))))
+ 	;(populate-match-table (get edns :single-match-data)))
 
-;=======
-;(defn hero-stats
-;  {:author "Brian"}
-;  [player-stats]
-;  (sort-by (comp - second)
-;           (set/rename-keys (frequencies (map :hero_id player-stats))
-;                            (heroes))))
-
-;(defn -main
-;  {:author "Brian"}
-;  [& player-ids]
-;  (spit "stats.html"
-;        (rum/render-static-markup
-;         (components/hero-stat-list (hero-stats (players dummy-match-data))))))
-;>>>>>>> 132bb02fc8be956515d2e0026a99bbac3adf767e
+; Search through the list of player ids for the last {} match ids
+; Throw them into a set to prevent duplicate pulls
+; Iterate through each match id
+; 	If it exists in the local database, don't do anything
+; 	If not, send out a request and add the result to the local database
+; Run stats on the collection of player ids

@@ -1,10 +1,9 @@
 (ns locket-match-queries.api
-  (:require
-   [clojure.edn :as edn]
-   [clojure.java.io :as io]
-   [clj-http.client :as http]
-   [clojure.string :as string]
-   [clojure.core.memoize :as memo])
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [clj-http.client :as http]
+            [clojure.string :as string]
+            [clojure.core.memoize :as memo])
   (:import (java.time Duration)))
 
 (def config (-> "config.edn"
@@ -33,7 +32,6 @@
     (let [match-info (get-in response [:body :result])]
       match-info)))
 
-
 (defn recent-matches
   "Get recent matches by player id"
   {:author "Brian"}
@@ -48,3 +46,23 @@
                                                 :matches_requested 100}})]
      (let [match-list (get-in response [:body :result :matches])]
        match-list))))
+
+(defn get-item-data
+  ([]
+   (let [url (mkurl "IEconDOTA2_570/GetGameItems/v1")
+         response (http/get url {:as :json
+                                 :query-params {:key (config :key)}})]
+     (let [item-data (get-in response [:body :result :items])]
+       item-data))))
+
+(defn get-hero-data
+  ([]
+   (let [url (mkurl "IEconDOTA2_570/GetHeroes/v1")
+         response (http/get url {:as :json
+                                 :query-params {:key (config :key)}})]
+     (let [hero-data (get-in response [:body :result :heros])]
+       hero-data))))
+
+(defn get-unique-match-ids
+  ([thisMatchEdn]
+   (reduce conj #{} (for [match thisMatchEdn] (get-in match [:match_id])))))
