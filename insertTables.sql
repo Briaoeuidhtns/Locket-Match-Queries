@@ -28,8 +28,9 @@ CREATE TABLE IF NOT EXISTS `mydb`.`match_table` (
   `first_blood_time` INT NOT NULL,
   `radiant_score` INT NOT NULL,
   `dire_score` INT NOT NULL,
-  `pick_ban_id` INT NOT NULL,
-  PRIMARY KEY (`match_id`))
+  `pick_ban_id` INT NULL,
+  PRIMARY KEY (`match_id`),
+  UNIQUE INDEX `match_id_UNIQUE` (`match_id` ASC))
 ENGINE = InnoDB;
 
 
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`lobby_info` (
   `lobby_type` INT NULL,
   `match_id` BIGINT(20) NOT NULL,
   INDEX `fk_lobby_info_match_table1_idx` (`match_id` ASC),
+  PRIMARY KEY (`match_id`),
   CONSTRAINT `fk_lobby_info_match_table1`
     FOREIGN KEY (`match_id`)
     REFERENCES `mydb`.`match_table` (`match_id`)
@@ -95,7 +97,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `mydb`.`hero` (
   `hero_id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`hero_id`))
+  PRIMARY KEY (`hero_id`),
+  UNIQUE INDEX `hero_id_UNIQUE` (`hero_id` ASC))
 ENGINE = InnoDB;
 
 
@@ -104,7 +107,11 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`pick_ban` (
   `match_id` BIGINT(20) NOT NULL,
+  `pick_ban_id` INT NOT NULL AUTO_INCREMENT,
   INDEX `fk_pick_ban_match_table1_idx` (`match_id` ASC),
+  UNIQUE INDEX `pick_ban_id_UNIQUE` (`pick_ban_id` ASC),
+  UNIQUE INDEX `match_id_UNIQUE` (`match_id` ASC),
+  PRIMARY KEY (`pick_ban_id`),
   CONSTRAINT `fk_pick_ban_match_table1`
     FOREIGN KEY (`match_id`)
     REFERENCES `mydb`.`match_table` (`match_id`)
@@ -142,7 +149,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`item` (
   `secret_shop` TINYINT NOT NULL,
   `side_shop` TINYINT NOT NULL,
   `recipe` TINYINT NOT NULL,
-  PRIMARY KEY (`item_id`))
+  PRIMARY KEY (`item_id`),
+  UNIQUE INDEX `item_id_UNIQUE` (`item_id` ASC))
 ENGINE = InnoDB;
 
 

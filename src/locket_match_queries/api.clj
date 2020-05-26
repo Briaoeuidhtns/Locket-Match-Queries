@@ -1,16 +1,11 @@
 (ns locket-match-queries.api
   (:require [clojure.edn :as edn]
-            [clojure.java.io :as io]
             [clj-http.client :as http]
             [clojure.string :as string]
-            [clojure.core.memoize :as memo])
+            [clojure.core.memoize :as memo]
+            [locket-match-queries.config :refer :all])
   (:import (java.time Duration)))
 
-(def config (-> "config.edn"
-                io/resource
-                io/reader
-                java.io.PushbackReader.
-                edn/read))
 
 (defn proper-keyword
   {:author "Brian"}
@@ -22,6 +17,9 @@
 
 (def mkurl (partial format "https://api.steampowered.com/%s"))
 
+
+
+
 (defn get-match-data
   {:author "Matthew"}
   [match-id]
@@ -31,6 +29,10 @@
                                                :match_id match-id}})]
     (let [match-info (get-in response [:body :result])]
       match-info)))
+
+(defn get-matches-data
+  [match_ids]
+  (map get-match-data match_ids))
 
 (defn recent-matches
   "Get recent matches by player id"
