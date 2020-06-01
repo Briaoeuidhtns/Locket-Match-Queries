@@ -46,7 +46,9 @@
   (do
  	(populate-hero-table (get edns :hero-data))
   (populate-item-table (get edns :item-data))
- 	(print (populate-match-table (get edns :single-match-data))))
+ 	(populate-match-table (get edns :single-match-data))
+ 	(populate-pick-ban-entries (get edns :single-match-data))
+ 	)
  	)
 
 ; Search through the list of player ids for the last {} match ids

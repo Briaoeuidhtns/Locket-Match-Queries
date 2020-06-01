@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`player_info` (
   `backpack_3` INT NULL,
   `backpack_4` INT NULL,
   `match_id` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`player_id`),
+  PRIMARY KEY (`player_id`, `match_id`),
   INDEX `fk_player_info_match_table1_idx` (`match_id` ASC),
   CONSTRAINT `fk_player_info_match_table1`
     FOREIGN KEY (`match_id`)
@@ -103,39 +103,21 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`pick_ban`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`pick_ban` (
-  `match_id` BIGINT(20) NOT NULL,
-  `pick_ban_id` INT NOT NULL AUTO_INCREMENT,
-  INDEX `fk_pick_ban_match_table1_idx` (`match_id` ASC),
-  UNIQUE INDEX `pick_ban_id_UNIQUE` (`pick_ban_id` ASC),
-  UNIQUE INDEX `match_id_UNIQUE` (`match_id` ASC),
-  PRIMARY KEY (`pick_ban_id`),
-  CONSTRAINT `fk_pick_ban_match_table1`
-    FOREIGN KEY (`match_id`)
-    REFERENCES `mydb`.`match_table` (`match_id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `mydb`.`pick_ban_entry`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`pick_ban_entry` (
   `is_pick` TINYINT NOT NULL,
   `hero_id` INT NOT NULL,
   `is_radiant` TINYINT NOT NULL,
-  `order` INT NOT NULL,
+  `pick_ban_order` INT NOT NULL,
   `match_id` BIGINT(20) NOT NULL,
-  INDEX `fk_pick_ban_entry_pick_ban1_idx` (`match_id` ASC),
-  PRIMARY KEY (`match_id`, `order`),
-  CONSTRAINT `fk_pick_ban_entry_pick_ban1`
+  PRIMARY KEY (`pick_ban_order`, `match_id`),
+  INDEX `fk_pick_ban_entry_match_table1_idx` (`match_id` ASC),
+  CONSTRAINT `fk_pick_ban_entry_match_table1`
     FOREIGN KEY (`match_id`)
-    REFERENCES `mydb`.`pick_ban` (`match_id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    REFERENCES `mydb`.`match_table` (`match_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
