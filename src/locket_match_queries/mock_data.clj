@@ -1,4 +1,4 @@
-(ns locket-match-queries.mock_data
+(ns locket-match-queries.mock-data
   (:require
    [clojure.edn :as edn]))
 

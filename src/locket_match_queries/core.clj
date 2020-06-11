@@ -5,7 +5,7 @@
    [clj-http.client :as http]
    [clojure.core.memoize :as memo]
    [locket-match-queries.api :refer :all]
-   [locket-match-queries.mock_data :refer :all]
+   [locket-match-queries.mock-data :refer :all]
    [locket-match-queries.repository :refer :all]
    [clojure.set :as set]
    [locket-match-queries.web :as components]
@@ -43,10 +43,10 @@
 
 (defn -main
   [& args]
-  (do (populate-hero-table (get edns :hero-data))
-      (populate-item-table (get edns :item-data))
-      (populate-match-table (get edns :single-match-data))
-      (populate-pick-ban-entries (get edns :single-match-data))))
+  (populate-hero-table (:hero-data edns))
+  (populate-item-table (:item-data edns))
+  (populate-match-table (:single-match-data edns))
+  (populate-pick-ban-entries (:single-match-data edns)))
 
 ; Search through the list of player ids for the last {} match ids
 ; Throw them into a set to prevent duplicate pulls

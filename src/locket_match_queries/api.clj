@@ -20,18 +20,16 @@
 
 (def mkurl (partial format "https://api.steampowered.com/%s"))
 
-
-
-
 (defn get-match-data
   {:author "Matthew"}
   [match-id]
-  (let [url      (mkurl "IDOTA2Match_570/GetMatchDetails/v1")
-        response (http/get url
-                           {:as :json
-                            :query-params {:key (config :key)
-                                           :match_id match-id}})]
-    (let [match-info (get-in response [:body :result])] match-info)))
+  (let [url        (mkurl "IDOTA2Match_570/GetMatchDetails/v1")
+        response   (http/get url
+                             {:as :json
+                              :query-params {:key (config :key)
+                                             :match_id match-id}})
+        match-info (get-in response [:body :result])]
+    match-info))
 
 (defn get-matches-data [match_ids] (map get-match-data match_ids))
 
@@ -40,13 +38,14 @@
   {:author "Brian"}
   ([] (recent-matches nil))
   ([id]
-   (let [url      (mkurl "IDOTA2Match_570/GetMatchHistory/v1")
-         response (http/get url
-                            {:as :json
-                             :query-params {:key (config :key)
-                                            :account_id id
-                                            :matches_requested 100}})]
-     (let [match-list (get-in response [:body :result :matches])] match-list))))
+   (let [url        (mkurl "IDOTA2Match_570/GetMatchHistory/v1")
+         response   (http/get url
+                              {:as :json
+                               :query-params {:key (config :key)
+                                              :account_id id
+                                              :matches_requested 100}})
+         match-list (get-in response [:body :result :matches])]
+     match-list)))
 
 (defn get-item-data
   ([]
@@ -61,5 +60,4 @@
      (let [hero-data (get-in response [:body :result :heros])] hero-data))))
 
 (defn get-unique-match-ids
-  ([thisMatchEdn]
-   (reduce conj #{} (for [match thisMatchEdn] (get-in match [:match_id])))))
+  ([this-match-edn] (set (map :match_id this-match-edn))))
