@@ -18,3 +18,9 @@
    :single-match-data (-> "singleMatchData.edn"
                           slurp
                           edn/read-string)})
+(defn -main
+  [& args]
+  (populate-hero-table (:hero-data edns))
+  (populate-item-table (:item-data edns))
+  (populate-match-table (:single-match-data edns))
+  (populate-pick-ban-entries (:single-match-data edns)))
