@@ -9,15 +9,9 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Table `match_table`
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-USE `mydb` ;
-
--- -----------------------------------------------------
--- Table `mydb`.`match_table`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`match_table` (
+CREATE TABLE IF NOT EXISTS `match_table` (
   `match_id` BIGINT(20) NOT NULL,
   `radiant_win` TINYINT NOT NULL,
   `duration` INT NOT NULL,
@@ -35,9 +29,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`lobby_info`
+-- Table `lobby_info`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`lobby_info` (
+CREATE TABLE IF NOT EXISTS `lobby_info` (
   `server` VARCHAR(45) CHARACTER SET 'ascii' NOT NULL,
   `league_id` INT NULL,
   `season` INT NULL,
@@ -48,16 +42,16 @@ CREATE TABLE IF NOT EXISTS `mydb`.`lobby_info` (
   PRIMARY KEY (`match_id`),
   CONSTRAINT `fk_lobby_info_match_table1`
     FOREIGN KEY (`match_id`)
-    REFERENCES `mydb`.`match_table` (`match_id`)
+    REFERENCES `match_table` (`match_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`player_info`
+-- Table `player_info`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`player_info` (
+CREATE TABLE IF NOT EXISTS `player_info` (
   `player_slot` INT NOT NULL,
   `is_radiant` TINYINT NOT NULL,
   `item_0` INT NULL,
@@ -85,16 +79,16 @@ CREATE TABLE IF NOT EXISTS `mydb`.`player_info` (
   INDEX `fk_player_info_match_table1_idx` (`match_id` ASC),
   CONSTRAINT `fk_player_info_match_table1`
     FOREIGN KEY (`match_id`)
-    REFERENCES `mydb`.`match_table` (`match_id`)
+    REFERENCES `match_table` (`match_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`hero`
+-- Table `hero`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`hero` (
+CREATE TABLE IF NOT EXISTS `hero` (
   `hero_id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`hero_id`),
@@ -103,9 +97,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`pick_ban_entry`
+-- Table `pick_ban_entry`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`pick_ban_entry` (
+CREATE TABLE IF NOT EXISTS `pick_ban_entry` (
   `is_pick` TINYINT NOT NULL,
   `hero_id` INT NOT NULL,
   `is_radiant` TINYINT NOT NULL,
@@ -115,16 +109,16 @@ CREATE TABLE IF NOT EXISTS `mydb`.`pick_ban_entry` (
   INDEX `fk_pick_ban_entry_match_table1_idx` (`match_id` ASC),
   CONSTRAINT `fk_pick_ban_entry_match_table1`
     FOREIGN KEY (`match_id`)
-    REFERENCES `mydb`.`match_table` (`match_id`)
+    REFERENCES `match_table` (`match_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`item`
+-- Table `item`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`item` (
+CREATE TABLE IF NOT EXISTS `item` (
   `item_id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `cost` INT NOT NULL,
