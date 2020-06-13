@@ -22,13 +22,13 @@
   {:main-opts ["-m" "locket-match-queries.mock-data"],
    :extra-paths ["dev-resources"]},
   :test
-  {:extra-paths ["test"],
+  {:extra-paths ["test" "dev-resources"],
    :extra-deps
    {lambdaisland/kaocha {:mvn/version "1.0.632"},
     lambdaisland/kaocha-cloverage {:mvn/version "1.0-45"},
     org.clojure/test.check {:mvn/version "1.0.0"},
     org.testcontainers/testcontainers {:mvn/version "1.14.3"},
-    org.testcontainers/mariadb {:mvn/version "1.14.3"}},
+    org.testcontainers/mysql {:mvn/version "1.14.3"}},
    :main-opts ["-m" "kaocha.runner"]},
   :uberjar
   {:extra-deps {luchiniatwork/cambada {:mvn/version "1.0.2"}},
