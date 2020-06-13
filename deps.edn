@@ -1,0 +1,33 @@
+{:paths ["src" "resources"],
+ :deps
+ {org.clojure/clojure {:mvn/version "1.10.1"},
+  com.zaxxer/HikariCP {:mvn/version "3.4.5"},
+  com.walmartlabs/lacinia-pedestal {:mvn/version "0.13.0"},
+  honeysql/honeysql {:mvn/version "1.0.444"},
+  slingshot/slingshot {:mvn/version "0.12.2"},
+  com.stuartsierra/component {:mvn/version "1.0.0"},
+  clj-http/clj-http {:mvn/version "3.10.1"},
+  seancorfield/next.jdbc {:mvn/version "1.0.462"},
+  com.taoensso/timbre {:mvn/version "4.11.0-alpha1"},
+  mysql/mysql-connector-java {:mvn/version "8.0.20"},
+  cheshire/cheshire {:mvn/version "5.10.0"}},
+ :mvn/repos
+ {"central" {:url "https://repo1.maven.org/maven2/"},
+  "clojars" {:url "https://repo.clojars.org/"}},
+ :aliases
+ {:dev {:extra-paths ["dev-resources"]},
+  :run {:main-opts ["-m" "locket-match-queries.core"]},
+  :populate-dev {:main-opts ["-m" "locket-match-queries.mock-data"]},
+  :test
+  {:extra-paths ["test"],
+   :extra-deps
+   {lambdaisland/kaocha {:mvn/version "1.0.632"},
+    lambdaisland/kaocha-cloverage {:mvn/version "1.0-45"},
+    org.clojure/test.check {:mvn/version "1.0.0"},
+    org.testcontainers/testcontainers {:mvn/version "1.14.3"},
+    org.testcontainers/mariadb {:mvn/version "1.14.3"}},
+   :main-opts ["-m" "kaocha.runner"]},
+  :uberjar
+  {:extra-deps {luchiniatwork/cambada {:mvn/version "1.0.2"}},
+   :main-opts
+   ["-m" "cambada.uberjar" "-m" "locket-match-queries.core"]}}}
