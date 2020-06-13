@@ -21,6 +21,12 @@ jobs:
       - name: Log in to docker
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ secrets.GITHUB_TOKEN }} --password-stdin
 
+      - name: Link config file
+        run: |
+          cat << EOF > resources/config.edn
+          {:db {} :key nil}
+          EOF
+
       - name: Run tests
         run: clojure -Atest
       - uses: actions/upload-artifact@v2
