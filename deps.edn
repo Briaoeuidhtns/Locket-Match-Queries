@@ -17,7 +17,8 @@
  :aliases
  {:dev {:extra-paths ["dev-resources"]},
   :run {:main-opts ["-m" "locket-match-queries.core"]},
-  :populate-dev {:main-opts ["-m" "locket-match-queries.mock-data"]},
+  :populate-dev {:main-opts ["-m" "locket-match-queries.mock-data"]
+                 :extra-paths ["dev-resources"]},
   :test
   {:extra-paths ["test"],
    :extra-deps

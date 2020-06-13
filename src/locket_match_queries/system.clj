@@ -3,4 +3,4 @@
    [com.stuartsierra.component :as component]
    [locket-match-queries.db.system :as db]))
 
-(defn new [] (merge (db/new-comp)))
+(defn new [{:keys [db]}] (merge (db/new-comp db)))

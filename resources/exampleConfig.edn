@@ -1,6 +1,8 @@
-{:db_ip "localhost"
- :db_name "mydb"
- :db_pass "password"
- :db_user "name"
+{:db ;; Only dbname is necessary
+   {:dbname "mydb"
+    :host "localhost"
+    :password "password"
+    :port 3306
+    :username "name"}
  :key "api key"
  :player_ids [id1 id2 id3]}
