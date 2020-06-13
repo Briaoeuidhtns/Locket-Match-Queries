@@ -4,9 +4,12 @@
    [clj-http.client :as http]
    [clojure.string :as string]
    [clojure.core.memoize :as memo]
-   [locket-match-queries.config :refer :all])
+   [taoensso.timbre :as log])
   (:import
    (java.time Duration)))
+
+;; once to allow redef for interactive
+(defonce ^:dynamic *key* nil)
 
 
 (defn proper-keyword
@@ -23,13 +26,14 @@
 (defn get-match-data
   {:author "Matthew"}
   [match-id]
-  (let [url        (mkurl "IDOTA2Match_570/GetMatchDetails/v1")
-        response   (http/get url
-                             {:as :json
-                              :query-params {:key (config :key)
-                                             :match_id match-id}})
-        match-info (get-in response [:body :result])]
-    match-info))
+  (let [res (promise)
+        url (mkurl "IDOTA2Match_570/GetMatchDetails/v1")]
+    (http/get
+      url
+      {:as :json :query-params {:key *key* :match_id match-id} :async? true}
+      (fn [val] (deliver res (get-in val [:body :result])))
+      (fn [err] (deliver res err)))
+    res))
 
 (defn get-matches-data [match_ids] (map get-match-data match_ids))
 
@@ -37,27 +41,38 @@
   "Get recent matches by player id"
   {:author "Brian"}
   ([] (recent-matches nil))
-  ([id]
-   (let [url        (mkurl "IDOTA2Match_570/GetMatchHistory/v1")
-         response   (http/get url
-                              {:as :json
-                               :query-params {:key (config :key)
-                                              :account_id id
-                                              :matches_requested 100}})
-         match-list (get-in response [:body :result :matches])]
-     match-list)))
+  ([id?]
+   (let [res (promise)
+         url (mkurl "IDOTA2Match_570/GetMatchHistory/v1")]
+     (http/get url
+               {:as :json
+                :query-params
+                  {:key *key* :account_id id? :matches_requested 100}
+                :async? true}
+               (fn [val] (deliver res (get-in val [:body :result :matches])))
+               (fn [err] (deliver res err)))
+     res)))
 
 (defn get-item-data
-  ([]
-   (let [url      (mkurl "IEconDOTA2_570/GetGameItems/v1")
-         response (http/get url {:as :json :query-params {:key (config :key)}})]
-     (let [item-data (get-in response [:body :result :items])] item-data))))
+  []
+  (let [res (promise)
+        url (mkurl "IEconDOTA2_570/GetGameItems/v1")]
+    (http/get url
+              {:as :json :query-params {:key *key*} :async? true}
+              (fn [val] (deliver res (get-in val [:body :result :items])))
+              (fn [err] (deliver res err)))
+    res))
 
 (defn get-hero-data
-  ([]
-   (let [url      (mkurl "IEconDOTA2_570/GetHeroes/v1")
-         response (http/get url {:as :json :query-params {:key (config :key)}})]
-     (let [hero-data (get-in response [:body :result :heros])] hero-data))))
+  []
+  (let [res (promise)
+        url (mkurl "IEconDOTA2_570/GetHeroes/v1")]
+    (http/get url
+              {:as :json :query-params {:key *key*} :async true?}
+              (fn [val] (deliver res (get-in val [:body :result :heroes])))
+              (fn [err] (deliver res err)))
+    res))
 
 (defn get-unique-match-ids
-  ([this-match-edn] (set (map :match_id this-match-edn))))
+  [this-match-edn]
+  (set (map :match_id this-match-edn)))

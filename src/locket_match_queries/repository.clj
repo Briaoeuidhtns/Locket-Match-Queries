@@ -1,74 +1,76 @@
 (ns locket-match-queries.repository
   (:require
    [clojure.edn :as edn]
-   [locket-match-queries.api :refer :all]
-   [locket-match-queries.config :refer :all]
-   [clojure.java.jdbc :as jdbc]
-   [clojure.set :refer [rename-keys]]))
-
-
-(def db-spec
-  {:dbtype "mysql"
-   :dbname (config :db_name)
-   :user (config :db_user)
-   :password (config :db_pass)
-   :host (config :db_ip)})
-
-(defn create-hero-entry
-  [[id hero-name]]
-  (jdbc/insert! db-spec :hero {:hero_id id :name (name hero-name)}))
+   [locket-match-queries.api :as api]
+   [locket-match-queries.db.system :refer [sql-format query-opts]]
+   [locket-match-queries.config :refer [config]]
+   [next.jdbc :as jdbc]
+   [honeysql.core :as sql]
+   [honeysql.helpers :as h]
+   [clojure.set :refer [rename-keys]]
+   [clojure.set :as set]
+   [slingshot.slingshot :refer [throw+]]))
 
 (defn populate-hero-table
-  ([hero-data]
-   ;; clear the heros table and then populate, TODO make smarter
-   (jdbc/delete! db-spec :hero ["1 = 1"])
-   (doseq [this-data hero-data] (create-hero-entry this-data))))
-
-(defn create-item-entry
-  [this-item-data]
-  (jdbc/insert! db-spec
-                :item
-                (-> this-item-data
-                    (select-keys
-                      [:item_id :name :cost :secret_shop :side_shop :recipe])
-                    (rename-keys {:id :item_id}))))
+  ([db hero-data]
+   (jdbc/execute! (db)
+                  (-> (h/truncate :hero)
+                      sql-format)
+                  query-opts)
+   (jdbc/execute! (db)
+                  (-> (h/insert-into :hero)
+                      (h/values (map #(rename-keys % {:id :hero-id}) hero-data))
+                      sql-format)
+                  query-opts)))
 
 (defn populate-item-table
-  [item-data]
-  ;; clear the heros table and then populate, TODO make smarter
-  (jdbc/delete! db-spec :item ["1 = 1"])
-  (doseq [this-data item-data] (create-item-entry this-data)))
+  [db item-data]
+  (jdbc/execute! (db)
+                 (-> (h/truncate :item)
+                     sql-format)
+                 query-opts)
+  (jdbc/execute! (db)
+                 (-> (h/insert-into :item)
+                     (h/values (map #(rename-keys % {:id :item-id}) item-data))
+                     sql-format)
+                 query-opts))
 
-(defn populate-match-table
-  [match-data]
-  (jdbc/insert! db-spec
-                :match_table
-                (select-keys match-data
-                             [:match_id
-                              :radiant_win
-                              :duration
-                              :first_blood_time
-                              :tower_status_dire
-                              :tower_status_radiant
-                              :barracks_status_dire
-                              :barracks_status_radiant
-                              :radiant_score
-                              :dire_score])))
-
-(defn create-pick-ban-entry
-  [pick-ban-data match-id]
-  (jdbc/insert! db-spec
-                :pick_ban_entry
-                (-> pick-ban-data
-                    (select-keys [:hero_id :is_pick :team :order])
-                    (rename-keys {:team :is_radiant})
-                    (assoc :match_id match-id))))
+(defn cache-matches
+  [db match-ids]
+  (let [needed (set match-ids)
+        found (transduce (map :match-table/match-id)
+                         conj
+                         #{}
+                         (jdbc/execute!
+                           (db)
+                           (-> (h/select :match-table/match-id)
+                               (h/from :match-table)
+                               (h/where [:in :match-table/match-id match-ids])
+                               sql-format)
+                           query-opts))
+        missing (set/difference needed found)
+        data-promises (doall (map (juxt identity api/get-match-data) missing))
+        {data false ; TODO set zprint max width for align
+         errors true}
+        (group-by (comp (partial instance? Throwable) second)
+                  (map (fn [[k p]] [k @p]) data-promises))]
+    (populate-match-tables data)
+    (throw+ "Error fetching some matches"
+            (-> (zipmap [:failed :causes] (apply mapv vector errors))
+                (assoc :type ::fetch-error)))))
 
 (defn populate-pick-ban-entries
-  [match-data]
-  (let [pick-ban-data (get match-data :picks_bans)]
-    (doseq [this-pick-ban pick-ban-data]
-      (create-pick-ban-entry this-pick-ban (:match_id match-data)))))
+  [db match-id pick-ban-data]
+  (jdbc/execute! (db)
+                 (-> (h/insert-into :pick-ban-entry)
+                     (h/values (map #(assoc % :match-id match-id)
+                                 pick-ban-data))
+                     sql-format)
+                 query-opts))
 
-
-(defn populate-match-tables ([match-data]))
+(defn populate-match-tables
+  [matches]
+  (populate-pick-ban-entries
+    (map (fn [{:keys [match_id picks_bans]}]
+           (map #(assoc % :match-id match_id) picks_bans))
+      matches)))
