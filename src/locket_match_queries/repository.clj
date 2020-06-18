@@ -98,7 +98,7 @@
                :backpack_2 :backpack_3 :item_neutral])
             (assoc :account_id account-id
                    :match_id match-id)))
-      (when-let [additional-units {:additional_units player-info-data}]
+      (when-let [additional-units (:additional_units player-info-data)]
         (populate-additional-unit-table additional-units
                                         match-id
                                         account-id)))))
