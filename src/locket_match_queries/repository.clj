@@ -86,34 +86,29 @@
   
   )
 
-; Anon account-ids are not unique it turns out 
+; Anon account-ids are not unique it turns out
 
 ; Anon radiant account-id 4294967295
 ; Anon dire account-id 970149193
 (defn create-player-info-entry
   [player-info-data match-id]
-  (let [account-id (get player-info-data :account_id)]
-    (if (and (not= account-id 4294967295) (not= account-id 970149193))
-      (doall
-       (jdbc/insert! db-spec :player_info {:match_id match-id
-                                           :player_slot (get player-info-data :player_slot)
-                                           :kills (get player-info-data :kills)
-                                           :deaths (get player-info-data :deaths)
-                                           :assists (get player-info-data :assists)
-                                           :leaver_status (get player-info-data :leaver_status)
-                                           :last_hits (get player-info-data :last_hits)
-                                           :denies (get player-info-data :denies)
-                                           :gold_per_min (get player-info-data :gold_per_min) :xp_per_min (get player-info-data :xp_per_min)
-                                           :account_id account-id :hero_id (get player-info-data :hero_id)
-                                           :item_0 (get player-info-data :item_0) :item_1 (get player-info-data :item_1)
-                                           :item_2 (get player-info-data :item_2) :item_3 (get player-info-data :item_3)
-                                           :item_4 (get player-info-data :item_4) :item_5 (get player-info-data :item_5)
-                                           :backpack_0 (get player-info-data :backpack_0) :backpack_1 (get player-info-data :backpack_1)
-                                           :backpack_2 (get player-info-data :backpack_2) :backpack_3 (get player-info-data :backpack_3)
-                                           :item_neutral (get player-info-data :item_neutral) })
-
-       (if (get player-info-data :additional_units) (populate-additional-unit-table (get player-info-data :additional_units) match-id account-id))
-       ))))
+  (let [{account-id :account_id} player-info-data]
+    (when (not (#{4294967295 970149193} account-id))
+      (jdbc/insert!
+        db-spec
+        :player_info
+        (-> player-info-data
+            (select-keys
+              [:player_slot :kills :deaths :assists :leaver_status :last_hits
+               :denies :gold_per_min :xp_per_min :hero_id :item_0 :item_1
+               :item_2 :item_3 :item_4 :item_5 :backpack_0 :backpack_1
+               :backpack_2 :backpack_3 :item_neutral])
+            (assoc :account_id account-id
+                   :match_id match-id)))
+      (when-let [additional-units {:additional_units player-info-data}]
+        (populate-additional-unit-table additional-units
+                                        match-id
+                                        account-id)))))
 
 (defn populate-player-info-table
   [match-data]
