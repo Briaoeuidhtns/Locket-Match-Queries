@@ -1,7 +1,6 @@
 (ns locket-match-queries.config
   (:require [clojure.java.io :as io]
-  [clojure.edn :as edn]))
-
+            [clojure.edn :as edn]))
 
 (def config (-> "config.edn"
                 io/resource

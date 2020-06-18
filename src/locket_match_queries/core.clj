@@ -27,29 +27,16 @@
   [result]
   (mapcat :players result))
 
-;(defn populate-match-table
-;[match-data]
-;(jdbc/insert! db-spec :Match {
-;	:matchID (get match-data :match_id)}))
-
-;(defn populate-playerInfo-table
-;[data]
-;(jdbc/insert! db-spec :Match {:playerSlot {} :isRadiant {} :item0 {} :item1 {} :item2 {}
-; :item3 {} :item4 {} :item5 {} :kills {} :deaths {} :assists {} :leaverStatus {}
-; :lastHits {} :denies {} :goldPerMinute {} :xpPerMinute {} :playerID {} :matchID {}
-; :heroID {}})
-;)
-
-
 (defn -main
   [& args]
-  (do
- 	(populate-hero-table (get edns :hero-data))
-  (populate-item-table (get edns :item-data))
- 	(populate-match-table (get edns :single-match-data))
- 	(populate-pick-ban-entries (get edns :single-match-data))
- 	)
- 	)
+  ;(let [match-data (get edns :single-match-data)]
+  (let [match-data (get edns :other-match-data)]
+    (do
+      (populate-hero-table (get edns :hero-data))
+      (populate-item-table (get edns :item-data))
+      (populate-match-table match-data)
+      (populate-pick-ban-entries match-data)
+      (populate-player-info-table match-data))))
 
 ; Search through the list of player ids for the last {} match ids
 ; Throw them into a set to prevent duplicate pulls

@@ -6,7 +6,6 @@
             [locket-match-queries.config :refer :all])
   (:import (java.time Duration)))
 
-
 (defn proper-keyword
   {:author "Brian"}
   ([name]
@@ -16,9 +15,6 @@
        (string/replace #"[_]|\W+" "-"))))
 
 (def mkurl (partial format "https://api.steampowered.com/%s"))
-
-
-
 
 (defn get-match-data
   {:author "Matthew"}
