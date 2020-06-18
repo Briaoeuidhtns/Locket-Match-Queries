@@ -64,26 +64,19 @@
 
 (defn create-additional-unit-entry
   [additional-unit-data match-id account-id]
-  (print "AAAA\n")
-  ;(jdbc/insert! db-spec :additional_unit {:item_0 (get additional-unit-data :item_0) :item_1 (get additional-unit-data :item_1)
-  ;                                        :item_2 (get additional-unit-data :item_2) :item_3 (get additional-unit-data :item_3)
-  ;                                        :item_4 (get additional-unit-data :item_4) :item_5 (get additional-unit-data :item_5)
-  ;                                        :backpack_0 (get additional-unit-data :backpack_0) :backpack_1 (get additional-unit-data :backpack_1)
-  ;                                        :backpack_2 (get additional-unit-data :backpack_2) :backpack_3 (get additional-unit-data :backpack_3)
-  ;                                        :unitname (get additional-unit-data :unitname "AAAAAAAAAAAA") :account_id account-id
-  ;                                        :match_id match-id})
+  ; Currently not grabbing entries correctly
+  (jdbc/insert! db-spec :additional_unit {:item_0 (get additional-unit-data :item_0) :item_1 (get additional-unit-data :item_1)
+                                          :item_2 (get additional-unit-data :item_2) :item_3 (get additional-unit-data :item_3)
+                                          :item_4 (get additional-unit-data :item_4) :item_5 (get additional-unit-data :item_5)
+                                          :backpack_0 (get additional-unit-data :backpack_0) :backpack_1 (get additional-unit-data :backpack_1)
+                                          :backpack_2 (get additional-unit-data :backpack_2) :backpack_3 (get additional-unit-data :backpack_3)
+                                          :unitname (get additional-unit-data :unitname "N/A") :account_id account-id
+                                          :match_id match-id})
 )
 
 (defn populate-additional-unit-table
   [additional-units-data match-id account-id]
-  (let [mod-list (list additional-units-data)]
-  (doall (for [this-data mod-list] (print "CCCC\n")))
-  )
-  ;(print (get (first additional-units-data) :unitname)) 
-  ;(doall (for [this-data (seq additional-units-data)] 
-  ;(create-additional-unit-entry (first additional-units-data) match-id account-id)
-  ;)) 
-  
+  (doall (for [this-data additional-units-data] (create-additional-unit-entry (first additional-units-data) match-id account-id)))
   )
 
 ; Anon account-ids are not unique it turns out

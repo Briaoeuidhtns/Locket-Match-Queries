@@ -5,19 +5,19 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema DOTA_DEV
+-- Schema mydb
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema DOTA_DEV
+-- Schema mydb
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `DOTA_DEV` DEFAULT CHARACTER SET utf8 ;
-USE `DOTA_DEV` ;
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+USE `mydb` ;
 
 -- -----------------------------------------------------
--- Table `DOTA_DEV`.`match_table`
+-- Table `mydb`.`match_table`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `DOTA_DEV`.`match_table` (
+CREATE TABLE IF NOT EXISTS `mydb`.`match_table` (
   `match_id` BIGINT(20) NOT NULL,
   `radiant_win` TINYINT NOT NULL,
   `duration` INT NOT NULL,
@@ -34,9 +34,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `DOTA_DEV`.`lobby_info`
+-- Table `mydb`.`lobby_info`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `DOTA_DEV`.`lobby_info` (
+CREATE TABLE IF NOT EXISTS `mydb`.`lobby_info` (
   `server_cluster` INT NOT NULL,
   `league_id` INT NULL,
   `season` INT NULL,
@@ -48,16 +48,16 @@ CREATE TABLE IF NOT EXISTS `DOTA_DEV`.`lobby_info` (
   PRIMARY KEY (`match_id`),
   CONSTRAINT `fk_lobby_info_match_table1`
     FOREIGN KEY (`match_id`)
-    REFERENCES `DOTA_DEV`.`match_table` (`match_id`)
+    REFERENCES `mydb`.`match_table` (`match_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `DOTA_DEV`.`player_info`
+-- Table `mydb`.`player_info`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `DOTA_DEV`.`player_info` (
+CREATE TABLE IF NOT EXISTS `mydb`.`player_info` (
   `player_slot` INT NOT NULL,
   `item_0` INT NULL,
   `item_1` INT NULL,
@@ -85,16 +85,16 @@ CREATE TABLE IF NOT EXISTS `DOTA_DEV`.`player_info` (
   INDEX `fk_player_info_match_table1_idx` (`match_id` ASC),
   CONSTRAINT `fk_player_info_match_table1`
     FOREIGN KEY (`match_id`)
-    REFERENCES `DOTA_DEV`.`match_table` (`match_id`)
+    REFERENCES `mydb`.`match_table` (`match_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `DOTA_DEV`.`hero`
+-- Table `mydb`.`hero`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `DOTA_DEV`.`hero` (
+CREATE TABLE IF NOT EXISTS `mydb`.`hero` (
   `hero_id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`hero_id`),
@@ -103,9 +103,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `DOTA_DEV`.`pick_ban_entry`
+-- Table `mydb`.`pick_ban_entry`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `DOTA_DEV`.`pick_ban_entry` (
+CREATE TABLE IF NOT EXISTS `mydb`.`pick_ban_entry` (
   `is_pick` TINYINT NOT NULL,
   `hero_id` INT NOT NULL,
   `is_radiant` TINYINT NOT NULL,
@@ -115,16 +115,16 @@ CREATE TABLE IF NOT EXISTS `DOTA_DEV`.`pick_ban_entry` (
   INDEX `fk_pick_ban_entry_match_table1_idx` (`match_id` ASC),
   CONSTRAINT `fk_pick_ban_entry_match_table1`
     FOREIGN KEY (`match_id`)
-    REFERENCES `DOTA_DEV`.`match_table` (`match_id`)
+    REFERENCES `mydb`.`match_table` (`match_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `DOTA_DEV`.`item`
+-- Table `mydb`.`item`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `DOTA_DEV`.`item` (
+CREATE TABLE IF NOT EXISTS `mydb`.`item` (
   `item_id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `cost` INT NOT NULL,
@@ -137,10 +137,10 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `DOTA_DEV`.`additional_unit`
+-- Table `mydb`.`additional_unit`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `DOTA_DEV`.`additional_unit` (
-  `unitname` VARCHAR(40) NOT NULL,
+CREATE TABLE IF NOT EXISTS `mydb`.`additional_unit` (
+  `unitname` VARCHAR(40) NULL,
   `item_0` INT NULL,
   `item_1` INT NULL,
   `item_2` INT NULL,
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS `DOTA_DEV`.`additional_unit` (
   PRIMARY KEY (`ai_differentiator`, `account_id`, `match_id`),
   CONSTRAINT `fk_additional_units_player_info1`
     FOREIGN KEY (`account_id` , `match_id`)
-    REFERENCES `DOTA_DEV`.`player_info` (`account_id` , `match_id`)
+    REFERENCES `mydb`.`player_info` (`account_id` , `match_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
