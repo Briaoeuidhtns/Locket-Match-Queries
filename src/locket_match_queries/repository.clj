@@ -21,8 +21,7 @@
    (jdbc/execute! (db)
                   (-> (h/insert-into :hero)
                       (h/values (map #(-> %
-                                          (rename-keys {:id :hero-id})
-                                          (update :name name))
+                                          (rename-keys {:id :hero-id}))
                                   hero-data))
                       sql-format)
                   query-opts)))
@@ -39,13 +38,88 @@
                      sql-format)
                  query-opts))
 
+(defn create-pick-ban-entry [])
 (defn populate-pick-ban-entries
-  [db pick-ban-data]
-  (jdbc/execute! (db)
-                 (-> (h/insert-into :pick-ban-entry)
-                     (h/values pick-ban-data)
-                     sql-format)
-                 query-opts))
+  [match-data]
+  (let [pick-ban-data (get match-data :picks_bans)]
+    (doall (for [this-pick-ban (seq pick-ban-data)]
+             (create-pick-ban-entry this-pick-ban
+                                    (get match-data :match_id))))))
+
+(defn create-additional-unit-entry
+  [additional-unit-data match-id account-id]
+  ; Currently not grabbing entries correctly
+  #_(jdbc/insert! db-spec
+                  :additional_unit
+                  (-> additional-unit-data
+                      (select-keys [:item_0
+                                    :item_1
+                                    :item_2
+                                    :item_3
+                                    :item_4
+                                    :item_5
+                                    :backpack_0
+                                    :backpack_1
+                                    :backpack_2
+                                    :backpack_3
+                                    :unitname])
+                      (assoc :account_id account-id
+                             :match_id match-id))))
+
+(defn populate-additional-unit-table
+  [additional-units-data match-id account-id]
+  (doall (for [this-data additional-units-data]
+           (create-additional-unit-entry (first additional-units-data)
+                                         match-id
+                                         account-id))))
+
+
+; Anon radiant account-id 4294967295
+; Anon dire account-id 970149193
+(def anon-account?
+  "Anon account-ids are not unique it turns out"
+  #{4294967295 970149193})
+
+(defn create-player-info-entry
+  [player-info-data match-id]
+  (let [{account-id :account_id} player-info-data]
+    (when (not (anon-account? account-id))
+      #_(jdbc/insert! db-spec
+                      :player_info
+                      (-> player-info-data
+                          (select-keys [:player_slot
+                                        :kills
+                                        :deaths
+                                        :assists
+                                        :leaver_status
+                                        :last_hits
+                                        :denies
+                                        :gold_per_min
+                                        :xp_per_min
+                                        :hero_id
+                                        :item_0
+                                        :item_1
+                                        :item_2
+                                        :item_3
+                                        :item_4
+                                        :item_5
+                                        :backpack_0
+                                        :backpack_1
+                                        :backpack_2
+                                        :backpack_3
+                                        :item_neutral])
+                          (assoc :account_id account-id
+                                 :match_id match-id)))
+      (when-let [additional-units (:additional_units player-info-data)]
+        (populate-additional-unit-table additional-units
+                                        match-id
+                                        account-id)))))
+
+(defn populate-player-info-table
+  [match-data]
+  (let [player-info-data (:players match-data)]
+    (doseq [this-player-info player-info-data]
+      (create-player-info-entry this-player-info (:match_id match-data)))))
 
 (defn populate-match-tables
   [db matches]

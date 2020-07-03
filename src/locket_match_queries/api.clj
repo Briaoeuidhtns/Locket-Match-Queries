@@ -1,5 +1,6 @@
 (ns locket-match-queries.api
   (:require
+   [camel-snake-kebab.core :as csk]
    [clojure.edn :as edn]
    [clj-http.client :as http]
    [clojure.string :as string]
@@ -11,15 +12,6 @@
 ;; once to allow redef for interactive
 (defonce ^:dynamic *key* nil)
 
-
-(defn proper-keyword
-  {:author "Brian"}
-  ([name]
-   (-> name
-       (string/replace-first #"." (memfn toLowerCase))
-       (string/replace #"(?<!^)[A-Z]"
-                       (comp (partial str \-) (memfn toLowerCase)))
-       (string/replace #"[_]|\W+" "-"))))
 
 (def mkurl (partial format "https://api.steampowered.com/%s"))
 
@@ -67,10 +59,20 @@
   []
   (let [res (promise)
         url (mkurl "IEconDOTA2_570/GetHeroes/v1")]
-    (http/get url
-              {:as :json :query-params {:key *key*} :async true?}
-              (fn [val] (deliver res (get-in val [:body :result :heroes])))
-              (fn [err] (deliver res err)))
+    (http/get
+      url
+      {:as :json :query-params {:key *key*} :async true?}
+      (fn [val]
+        (deliver
+          res
+          (as-> val $
+            (get-in $ [:body :result :heroes])
+            (map #(update %
+                          :name
+                          (comp csk/->kebab-case-keyword
+                                (partial re-find #"(?<=npc_dota_hero_).*")))
+              $))))
+      (fn [err] (deliver res err)))
     res))
 
 (defn get-unique-match-ids

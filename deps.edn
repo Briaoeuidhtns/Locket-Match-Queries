@@ -11,7 +11,8 @@
   com.fzakaria/slf4j-timbre {:mvn/version "0.3.19"},
   com.taoensso/timbre {:mvn/version "4.11.0-alpha1"},
   mysql/mysql-connector-java {:mvn/version "8.0.20"},
-  cheshire/cheshire {:mvn/version "5.10.0"}},
+  cheshire/cheshire {:mvn/version "5.10.0"},
+  camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.1"}},
  :mvn/repos
  {"central" {:url "https://repo1.maven.org/maven2/"},
   "clojars" {:url "https://repo.clojars.org/"}},
@@ -26,6 +27,7 @@
    :extra-deps
    {lambdaisland/kaocha {:mvn/version "1.0.632"},
     lambdaisland/kaocha-cloverage {:mvn/version "1.0-45"},
+    clj-http-fake/clj-http-fake {:mvn/version "1.0.3"},
     org.clojure/test.check {:mvn/version "1.0.0"},
     org.testcontainers/testcontainers {:mvn/version "1.14.3"},
     org.testcontainers/mysql {:mvn/version "1.14.3"}},
