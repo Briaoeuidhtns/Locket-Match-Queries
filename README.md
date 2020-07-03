@@ -6,7 +6,7 @@ Project originally a partner project for the Programming Languages class at SDSM
 The database can either be run through docker or set up manually.
 
 ## Docker
-The tests use github packages to store docker images, and even though they're public, you must be authenticated as per (these instructions)[https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-docker-for-use-with-github-packages#authenticating-to-github-packages]. More info (here)[https://github.community/t/download-from-github-package-registry-without-authentication/14407].
+The tests use github packages to store docker images, and even though they're public, you must be authenticated as per [these instructions](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-docker-for-use-with-github-packages#authenticating-to-github-packages). More info [here](https://github.community/t/download-from-github-package-registry-without-authentication/14407).
 
 The docker image can also be used as a development server, to ensure a consistent environment.
 
