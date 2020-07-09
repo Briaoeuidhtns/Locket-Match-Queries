@@ -27,8 +27,8 @@
    :extra-deps
    {lambdaisland/kaocha {:mvn/version "1.0.632"},
     lambdaisland/kaocha-cloverage {:mvn/version "1.0-45"},
-    clj-http-fake/clj-http-fake {:mvn/version "1.0.3"},
     org.clojure/test.check {:mvn/version "1.0.0"},
+    zprint/zprint {:mvn/version "1.0.0"},
     org.testcontainers/testcontainers {:mvn/version "1.14.3"},
     org.testcontainers/mysql {:mvn/version "1.14.3"}},
    :main-opts ["-m" "kaocha.runner"]},
