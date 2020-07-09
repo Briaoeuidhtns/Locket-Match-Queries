@@ -1,13 +1,7 @@
 (ns locket-match-queries.api
   (:require
    [camel-snake-kebab.core :as csk]
-   [clojure.edn :as edn]
-   [clj-http.client :as http]
-   [clojure.string :as string]
-   [clojure.core.memoize :as memo]
-   [taoensso.timbre :as log])
-  (:import
-   (java.time Duration)))
+   [clj-http.client :as http]))
 
 ;; once to allow redef for interactive
 (defonce ^:dynamic *key* nil)

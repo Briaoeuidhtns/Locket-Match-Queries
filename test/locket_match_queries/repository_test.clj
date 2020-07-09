@@ -5,7 +5,6 @@
    [locket-match-queries.test.setup :as setup :refer [*system*]]
    [clojure.test :as t]
    [next.jdbc :as jdbc]
-   [taoensso.timbre :as log]
    [com.stuartsierra.component :as component]))
 
 ;; Ideally would be `:every`, but the container takes ~60 seconds to spin up

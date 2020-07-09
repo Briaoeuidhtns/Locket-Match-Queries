@@ -1,9 +1,6 @@
 (ns locket-match-queries.test.setup
   (:require
-   [com.stuartsierra.component :as component]
-   [next.jdbc :as q]
-   [locket-match-queries.db.system :as db.system]
-   [clojure.string :as string])
+   [locket-match-queries.db.system :as db.system])
   (:import
    (org.testcontainers.containers MySQLContainer)))
 

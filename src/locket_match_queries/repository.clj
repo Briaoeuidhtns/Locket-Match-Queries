@@ -1,16 +1,11 @@
 (ns locket-match-queries.repository
   (:require
-   [clojure.edn :as edn]
    [locket-match-queries.api :as api]
    [locket-match-queries.db.system :refer [sql-format query-opts]]
-   [locket-match-queries.config :refer [config]]
    [next.jdbc :as jdbc]
-   [honeysql.core :as sql]
    [honeysql.helpers :as h]
-   [clojure.set :refer [rename-keys]]
-   [clojure.set :as set]
-   [slingshot.slingshot :refer [throw+]]
-   [taoensso.timbre :as log]))
+   [clojure.set :as set :refer [rename-keys]]
+   [slingshot.slingshot :refer [throw+]]))
 
 (defn populate-hero-table
   ([db hero-data]

@@ -1,8 +1,6 @@
 (ns locket-match-queries.db.system
   (:require
-   [com.stuartsierra.component :as component]
    [honeysql.core :as sql]
-   [next.jdbc :as jdbc]
    [next.jdbc.connection :as connection]
    [next.jdbc.result-set :as result-set]
    [taoensso.timbre :as log]
