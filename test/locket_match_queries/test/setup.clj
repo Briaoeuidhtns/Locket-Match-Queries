@@ -11,9 +11,8 @@
   (with-open
     [c
      (MySQLContainer.
-       "docker.pkg.github.com/matthewreff/locket-match-queries/locket-ci-db:0.1.1")]
+       "docker.pkg.github.com/matthewreff/locket-match-queries/locket-ci-db:0.1.2")]
     (.start c)
-    (println "here " (.getJdbcUrl c))
     (binding [*system* (merge *system*
                               (db.system/new-comp
                                 {:jdbcUrl (.getJdbcUrl c)
