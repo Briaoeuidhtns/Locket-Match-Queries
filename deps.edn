@@ -3,13 +3,14 @@
  {org.clojure/clojure {:mvn/version "1.10.1"},
   com.zaxxer/HikariCP {:mvn/version "3.4.5"},
   com.walmartlabs/lacinia-pedestal {:mvn/version "0.14.0"},
+  metosin/spec-tools {:mvn/version "0.10.3"},
   honeysql/honeysql {:mvn/version "1.0.444"},
   slingshot/slingshot {:mvn/version "0.12.2"},
   com.stuartsierra/component {:mvn/version "1.0.0"},
   clj-http/clj-http {:mvn/version "3.10.1"},
   seancorfield/next.jdbc
-  {:git/url "https://github.com/Briaoeuidhtns/next-jdbc/",
-   :sha "064e96ca84297684848917b77c28bd06047bc342"},
+  {:git/url "https://github.com/seancorfield/next-jdbc/",
+   :sha "9501d9293c3668d56dcbb2254b58baa26cecc926"},
   com.fzakaria/slf4j-timbre {:mvn/version "0.3.19"},
   com.taoensso/timbre {:mvn/version "4.11.0-alpha1"},
   mysql/mysql-connector-java {:mvn/version "8.0.20"},
@@ -19,8 +20,7 @@
  {"central" {:url "https://repo1.maven.org/maven2/"},
   "clojars" {:url "https://repo.clojars.org/"}},
  :aliases
- {:dev {:extra-paths ["dev-resources"]},
-  :run {:main-opts ["-m" "locket-match-queries.core"]},
+ {:run {:main-opts ["-m" "locket-match-queries.core"]},
   :populate-dev
   {:main-opts ["-m" "locket-match-queries.mock-data"],
    :extra-paths ["dev-resources"]},
@@ -29,6 +29,7 @@
    :extra-deps
    {lambdaisland/kaocha {:mvn/version "1.0.632"},
     lambdaisland/kaocha-cloverage {:mvn/version "1.0-45"},
+    speculative/speculative {:mvn/version "0.0.3"},
     org.clojure/test.check {:mvn/version "1.0.0"},
     zprint/zprint {:mvn/version "1.0.0"},
     org.testcontainers/testcontainers {:mvn/version "1.14.3"},

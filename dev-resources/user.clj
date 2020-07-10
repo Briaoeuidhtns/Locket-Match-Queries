@@ -1,10 +1,12 @@
 (ns user
   (:require
-   [next.jdbc.specs]
+   [next.jdbc.specs] ;; to ensure loaded to instrument
    [locket-match-queries.api :as api]
+   [locket-match-queries.repository :as repo]
+   [orchestra.spec.test :as st]
    [locket-match-queries.config :refer [config]]))
 
-(next.jdbc.specs/instrument)
+(st/instrument)
 
 (defn inject-key
   "Inject the api key so it doesn't have to be bound each time
