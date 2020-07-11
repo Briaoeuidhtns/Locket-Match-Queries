@@ -19,7 +19,7 @@
 (s/def ::order int?)
 (s/def ::team #{0 1})
 (s/def ::pick_ban (s/keys :req-un [::hero/hero_id ::is_pick ::order ::team]))
-(s/def ::picks_bans (s/* ::pick_ban))
+(s/def ::picks_bans (s/coll-of ::pick_ban))
 
 (s/def ::match
   (s/keys :req-un [::match_id

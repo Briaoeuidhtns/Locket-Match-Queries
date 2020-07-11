@@ -9,7 +9,8 @@
    [locket-match-queries.api :as api]
    [honeysql.helpers :as h]
    [honeysql.core :as sql]
-   [snap.core :refer [match-snapshot]]))
+   [snap.core :refer [match-snapshot]]
+   [clojure.spec.alpha :as s]))
 
 ;; Ideally would be `:every`, but the container takes ~60 seconds to spin up
 (t/use-fixtures :once

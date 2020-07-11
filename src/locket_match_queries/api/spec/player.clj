@@ -56,6 +56,8 @@
                    ::item/backpack_2
                    ::item/backpack_3
                    ::item/item_neutral
-                   ::additional-units]))
+                   ::additional_units]))
 
-(s/def ::players (s/* ::player))
+;; Can't use the regex matchers and still get strip-keys from spec-tools
+;; https://github.com/metosin/spec-tools/issues/228
+(s/def ::players (s/coll-of ::player))

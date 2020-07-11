@@ -10,7 +10,8 @@
    [locket-match-queries.db.system :refer [sql-format query-opts]]
    [next.jdbc :as jdbc]
    [slingshot.slingshot :refer [throw+]]
-   [spec-tools.core :refer [select-spec]]))
+   [spec-tools.core :refer [select-spec]]
+   [taoensso.timbre :as log]))
 
 (defn populate-hero-table
   ([db hero-data]
@@ -28,7 +29,7 @@
                   query-opts)))
 (s/fdef populate-hero-table
   :args (s/cat :db :next.jdbc.specs/connectable
-               :item-data (s/* ::item/item)))
+               :item-data (s/coll-of ::item/item)))
 
 (defn populate-item-table
   [db item-data]
@@ -43,7 +44,7 @@
                  query-opts))
 (s/fdef populate-item-table
   :args (s/cat :db :next.jdbc.specs/connectable
-               :item-data (s/* ::item/item)))
+               :item-data (s/coll-of ::item/item)))
 
 (defn populate-pick-ban-entries
   [db matches]
@@ -61,7 +62,7 @@
                    query-opts)))
 (s/fdef populate-pick-ban-entries
   :args (s/cat :db :next.jdbc.specs/connectable
-               :matches (s/* ::match/match)))
+               :matches (s/coll-of ::match/match)))
 
 (defn populate-additional-unit-table
   [db additional-units]
@@ -73,9 +74,9 @@
 (s/fdef populate-additional-unit-table
   :args (s/cat :db :next.jdbc.specs/connectable
                :additional-units
-                 (s/* (s/merge ::player/additional-units
-                                 (s/keys :req-un [::player/account_id
-                                                  ::match/match_id])))))
+                 (s/coll-of (s/merge ::player/additional-units
+                                       (s/keys :req-un [::player/account_id
+                                                        ::match/match_id])))))
 
 ; Anon radiant account-id 4294967295
 ; Anon dire account-id 970149193
@@ -96,10 +97,11 @@
         additional-units
         (filter identity
           (mapcat (fn [{:keys [additional_units match_id account_id]}]
-                    (map #(-> %
-                              (select-spec ::player/additional-units)
-                              (assoc :match_id match_id
-                                     :account_id account_id))
+                    (map #(as-> % $
+                            (select-spec ::player/additional-units $)
+                            (assoc $
+                              :match_id match_id
+                              :account_id account_id))
                       additional_units))
             players-data))]
     (jdbc/execute! (db)
@@ -107,10 +109,11 @@
                        (h/values enterable-players)
                        sql-format)
                    query-opts)
-    (populate-additional-unit-table db additional-units)))
+    (when (seq additional-units)
+      (populate-additional-unit-table db additional-units))))
 (s/fdef populate-player-info-table
   :args (s/cat :db :next.jdbc.specs/connectable
-               :matches (s/* ::match/match)))
+               :matches (s/coll-of ::match/match)))
 
 (defn populate-match-tables
   [db matches]
@@ -121,10 +124,11 @@
           (map #(dissoc (select-spec ::match/match %) :players :picks_bans)
             matches))
         sql-format))
-  (populate-pick-ban-entries db matches))
+  (populate-pick-ban-entries db matches)
+  (populate-player-info-table db matches))
 (s/fdef populate-match-tables
   :args (s/cat :db :next.jdbc.specs/connectable
-               :matches (s/* ::match/match)))
+               :matches (s/coll-of ::match/match)))
 
 (defn cache-matches
   [db match-ids]
