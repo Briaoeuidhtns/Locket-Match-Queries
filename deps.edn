@@ -36,6 +36,6 @@
     org.testcontainers/mysql {:mvn/version "1.14.3"}},
    :main-opts ["-m" "kaocha.runner"]},
   :uberjar
-  {:extra-deps {luchiniatwork/cambada {:mvn/version "1.0.2"}},
+  {:extra-deps {cambada {:mvn/version "1.0.7"}},
    :main-opts
    ["-m" "cambada.uberjar" "-m" "locket-match-queries.core"]}}}
