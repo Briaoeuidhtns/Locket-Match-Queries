@@ -1,11 +1,16 @@
 (ns locket-match-queries.repository
   (:require
+   [clojure.set :as set :refer [rename-keys]]
+   [clojure.spec.alpha :as s]
+   [honeysql.helpers :as h]
    [locket-match-queries.api :as api]
+   [locket-match-queries.api.spec.item :as item]
+   [locket-match-queries.api.spec.match :as match]
+   [locket-match-queries.api.spec.player :as player]
    [locket-match-queries.db.system :refer [sql-format query-opts]]
    [next.jdbc :as jdbc]
-   [honeysql.helpers :as h]
-   [clojure.set :as set :refer [rename-keys]]
-   [slingshot.slingshot :refer [throw+]]))
+   [slingshot.slingshot :refer [throw+]]
+   [spec-tools.core :refer [select-spec]]))
 
 (defn populate-hero-table
   ([db hero-data]
@@ -16,10 +21,14 @@
    (jdbc/execute! (db)
                   (-> (h/insert-into :hero)
                       (h/values (map #(-> %
-                                          (rename-keys {:id :hero-id}))
+                                          (rename-keys {:id :hero-id})
+                                          (update :name name))
                                   hero-data))
                       sql-format)
                   query-opts)))
+(s/fdef populate-hero-table
+  :args (s/cat :db :next.jdbc.specs/connectable
+               :item-data (s/* ::item/item)))
 
 (defn populate-item-table
   [db item-data]
@@ -32,42 +41,41 @@
                      (h/values (map #(rename-keys % {:id :item-id}) item-data))
                      sql-format)
                  query-opts))
+(s/fdef populate-item-table
+  :args (s/cat :db :next.jdbc.specs/connectable
+               :item-data (s/* ::item/item)))
 
-(defn create-pick-ban-entry [])
 (defn populate-pick-ban-entries
-  [match-data]
-  (let [pick-ban-data (get match-data :picks_bans)]
-    (doall (for [this-pick-ban (seq pick-ban-data)]
-             (create-pick-ban-entry this-pick-ban
-                                    (get match-data :match_id))))))
-
-(defn create-additional-unit-entry
-  [additional-unit-data match-id account-id]
-  ; Currently not grabbing entries correctly
-  #_(jdbc/insert! db-spec
-                  :additional_unit
-                  (-> additional-unit-data
-                      (select-keys [:item_0
-                                    :item_1
-                                    :item_2
-                                    :item_3
-                                    :item_4
-                                    :item_5
-                                    :backpack_0
-                                    :backpack_1
-                                    :backpack_2
-                                    :backpack_3
-                                    :unitname])
-                      (assoc :account_id account-id
-                             :match_id match-id))))
+  [db matches]
+  (let [entries (mapcat (fn [{:keys [match_id picks_bans]}]
+                          (map #(-> %
+                                    (assoc :match-id match_id)
+                                    (rename-keys {:team :is-radiant
+                                                  :order :pick-ban-order}))
+                            picks_bans))
+                  matches)]
+    (jdbc/execute! (db)
+                   (-> (h/insert-into :pick-ban-entry)
+                       (h/values entries)
+                       sql-format)
+                   query-opts)))
+(s/fdef populate-pick-ban-entries
+  :args (s/cat :db :next.jdbc.specs/connectable
+               :matches (s/* ::match/match)))
 
 (defn populate-additional-unit-table
-  [additional-units-data match-id account-id]
-  (doall (for [this-data additional-units-data]
-           (create-additional-unit-entry (first additional-units-data)
-                                         match-id
-                                         account-id))))
-
+  [db additional-units]
+  (jdbc/execute! (db)
+                 (-> (h/insert-into :additional-unit)
+                     (h/values additional-units)
+                     sql-format)
+                 query-opts))
+(s/fdef populate-additional-unit-table
+  :args (s/cat :db :next.jdbc.specs/connectable
+               :additional-units
+                 (s/* (s/merge ::player/additional-units
+                                 (s/keys :req-un [::player/account_id
+                                                  ::match/match_id])))))
 
 ; Anon radiant account-id 4294967295
 ; Anon dire account-id 970149193
@@ -75,74 +83,48 @@
   "Anon account-ids are not unique it turns out"
   #{4294967295 970149193})
 
-(defn create-player-info-entry
-  [player-info-data match-id]
-  (let [{account-id :account_id} player-info-data]
-    (when (not (anon-account? account-id))
-      #_(jdbc/insert! db-spec
-                      :player_info
-                      (-> player-info-data
-                          (select-keys [:player_slot
-                                        :kills
-                                        :deaths
-                                        :assists
-                                        :leaver_status
-                                        :last_hits
-                                        :denies
-                                        :gold_per_min
-                                        :xp_per_min
-                                        :hero_id
-                                        :item_0
-                                        :item_1
-                                        :item_2
-                                        :item_3
-                                        :item_4
-                                        :item_5
-                                        :backpack_0
-                                        :backpack_1
-                                        :backpack_2
-                                        :backpack_3
-                                        :item_neutral])
-                          (assoc :account_id account-id
-                                 :match_id match-id)))
-      (when-let [additional-units (:additional_units player-info-data)]
-        (populate-additional-unit-table additional-units
-                                        match-id
-                                        account-id)))))
+(s/def ::unique-account-id (s/and pos-int? (complement anon-account?)))
 
 (defn populate-player-info-table
-  [match-data]
-  (let [player-info-data (:players match-data)]
-    (doseq [this-player-info player-info-data]
-      (create-player-info-entry this-player-info (:match_id match-data)))))
+  [db matches]
+  (let [players-data (filter (comp not anon-account? :account_id)
+                       (mapcat (fn [{:keys [match_id players]}]
+                                 (map #(assoc % :match_id match_id)
+                                   (select-spec ::player/players players)))
+                         matches))
+        enterable-players (map #(dissoc % :additional_units) players-data)
+        additional-units
+        (filter identity
+          (mapcat (fn [{:keys [additional_units match_id account_id]}]
+                    (map #(-> %
+                              (select-spec ::player/additional-units)
+                              (assoc :match_id match_id
+                                     :account_id account_id))
+                      additional_units))
+            players-data))]
+    (jdbc/execute! (db)
+                   (-> (h/insert-into :player-info)
+                       (h/values enterable-players)
+                       sql-format)
+                   query-opts)
+    (populate-additional-unit-table db additional-units)))
+(s/fdef populate-player-info-table
+  :args (s/cat :db :next.jdbc.specs/connectable
+               :matches (s/* ::match/match)))
 
 (defn populate-match-tables
   [db matches]
-  (jdbc/execute! (db)
-                 (-> (h/insert-into :match-table)
-                     (h/values (map
-                                 #(select-keys %
-                                               [:match_id
-                                                :radiant_win
-                                                :duration
-                                                :tower_status_dire
-                                                :tower_status_radiant
-                                                :barracks_status_dire
-                                                :barracks_status_radiant
-                                                :first_blood_time
-                                                :radiant_score
-                                                :dire_score])
-                                 matches))
-                     sql-format))
-  (populate-pick-ban-entries
-    db
-    (mapcat (fn [{:keys [match_id picks_bans]}]
-              (map #(-> %
-                        (assoc :match-id match_id)
-                        (rename-keys {:team :is-radiant
-                                      :order :pick-ban-order}))
-                picks_bans))
-      matches)))
+  (jdbc/execute!
+    (db)
+    (-> (h/insert-into :match-table)
+        (h/values
+          (map #(dissoc (select-spec ::match/match %) :players :picks_bans)
+            matches))
+        sql-format))
+  (populate-pick-ban-entries db matches))
+(s/fdef populate-match-tables
+  :args (s/cat :db :next.jdbc.specs/connectable
+               :matches (s/* ::match/match)))
 
 (defn cache-matches
   [db match-ids]
@@ -159,11 +141,10 @@
                            query-opts))
         missing (set/difference needed found)
         data-promises (doall (map (juxt identity api/get-match-data) missing))
-        {data false ; TODO set zprint max width for align
-         errors true}
-        (group-by (comp (partial instance? Throwable) second)
-                  (map (fn [[k p]] [k @p]) data-promises))]
-    (populate-match-tables data)
+        {data false errors true} (group-by
+                                   (comp (partial instance? Throwable) second)
+                                   (map (fn [[k p]] [k @p]) data-promises))]
+    (populate-match-tables db data)
     (throw+ "Error fetching some matches"
             (-> (zipmap [:failed :causes] (apply mapv vector errors))
                 (assoc :type ::fetch-error)))))
