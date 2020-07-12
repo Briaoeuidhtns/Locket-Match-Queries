@@ -1,0 +1,12 @@
+{:objects {:Hero {:description "A Dota 2 Hero"
+                  :display {:description "The human readable name of the hero"
+                            :type String}
+                  :fields
+                    {:id {:description "A unique number identifying the hero"
+                          :type Int}
+                     :name {:description
+                              "The unique name used internally in the game"
+                            :type String}}}}
+ :queries {:heroes {:description "Get all heroes"
+                    :resolve :query/heroes
+                    :type (non-null (list (non-null :Hero)))}}}

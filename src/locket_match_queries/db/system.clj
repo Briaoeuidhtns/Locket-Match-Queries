@@ -2,23 +2,11 @@
   (:require
    [honeysql.core :as sql]
    [next.jdbc.connection :as connection]
-   [next.jdbc.result-set :as result-set]
-   [taoensso.timbre :as log]
-   [clojure.string :as str])
+   [taoensso.timbre :as log])
   (:import
    (com.zaxxer.hikari HikariDataSource)))
 
 (def ^:private default-config {:dbtype "mysql"})
-
-(defn as-kebab-maps
-  [rs opts]
-  (let [kebab #(str/replace % #"_" "-")]
-    (result-set/as-modified-maps rs
-                                 (assoc opts
-                                   :qualifier-fn kebab
-                                   :label-fn kebab))))
-
-(def query-opts {:builder-fn as-kebab-maps})
 
 (defn new-comp
   ([] (new-comp nil))
