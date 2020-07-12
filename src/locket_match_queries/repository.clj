@@ -8,7 +8,7 @@
    [locket-match-queries.api.spec.item :as item]
    [locket-match-queries.api.spec.match :as match]
    [locket-match-queries.api.spec.player :as player]
-   [locket-match-queries.db.system :refer [sql-format query-opts]]
+   [locket-match-queries.db.system :refer [sql-format]]
    [next.jdbc :as jdbc]
    [slingshot.slingshot :refer [throw+]]
    [spec-tools.core :refer [select-spec]]
@@ -19,7 +19,7 @@
    (jdbc/execute! (db)
                   (-> (h/truncate :hero)
                       sql-format)
-                  query-opts)
+                  jdbc/snake-kebab-opts)
    (jdbc/execute! (db)
                   (-> (h/insert-into :hero)
                       (h/values (map #(-> %
@@ -27,7 +27,7 @@
                                           (update :name name))
                                   hero-data))
                       sql-format)
-                  query-opts)))
+                  jdbc/snake-kebab-opts)))
 (s/fdef populate-hero-table
   :args (s/cat :db :next.jdbc.specs/connectable
                :hero-data (s/coll-of ::hero/hero)))
@@ -37,12 +37,12 @@
   (jdbc/execute! (db)
                  (-> (h/truncate :item)
                      sql-format)
-                 query-opts)
+                 jdbc/snake-kebab-opts)
   (jdbc/execute! (db)
                  (-> (h/insert-into :item)
                      (h/values (map #(rename-keys % {:id :item-id}) item-data))
                      sql-format)
-                 query-opts))
+                 jdbc/snake-kebab-opts))
 (s/fdef populate-item-table
   :args (s/cat :db :next.jdbc.specs/connectable
                :item-data (s/coll-of ::item/item)))
@@ -60,7 +60,7 @@
                    (-> (h/insert-into :pick-ban-entry)
                        (h/values entries)
                        sql-format)
-                   query-opts)))
+                   jdbc/snake-kebab-opts)))
 (s/fdef populate-pick-ban-entries
   :args (s/cat :db :next.jdbc.specs/connectable
                :matches (s/coll-of ::match/match)))
@@ -71,7 +71,7 @@
                  (-> (h/insert-into :additional-unit)
                      (h/values additional-units)
                      sql-format)
-                 query-opts))
+                 jdbc/snake-kebab-opts))
 (s/fdef populate-additional-unit-table
   :args (s/cat :db :next.jdbc.specs/connectable
                :additional-units
@@ -109,7 +109,7 @@
                    (-> (h/insert-into :player-info)
                        (h/values enterable-players)
                        sql-format)
-                   query-opts)
+                   jdbc/snake-kebab-opts)
     (when (seq additional-units)
       (populate-additional-unit-table db additional-units))))
 (s/fdef populate-player-info-table
@@ -143,7 +143,7 @@
                                (h/from :match-table)
                                (h/where [:in :match-table/match-id match-ids])
                                sql-format)
-                           query-opts))
+                           jdbc/snake-kebab-opts))
         missing (set/difference needed found)
         data-promises (doall (map (juxt identity api/get-match-data) missing))
         {data false errors true} (group-by
