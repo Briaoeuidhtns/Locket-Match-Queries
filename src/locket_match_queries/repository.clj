@@ -4,6 +4,7 @@
    [clojure.spec.alpha :as s]
    [honeysql.helpers :as h]
    [locket-match-queries.api :as api]
+   [locket-match-queries.api.spec.hero :as hero]
    [locket-match-queries.api.spec.item :as item]
    [locket-match-queries.api.spec.match :as match]
    [locket-match-queries.api.spec.player :as player]
@@ -29,7 +30,7 @@
                   query-opts)))
 (s/fdef populate-hero-table
   :args (s/cat :db :next.jdbc.specs/connectable
-               :item-data (s/coll-of ::item/item)))
+               :hero-data (s/coll-of ::hero/hero)))
 
 (defn populate-item-table
   [db item-data]
