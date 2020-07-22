@@ -1,15 +1,17 @@
-name: CI
+name: Backend
 
 on:
   push:
     branches: [ master ]
+    paths: [backend/**]
   pull_request:
     branches: [ master ]
-    
+    paths: [backend/**]
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v2
 
@@ -48,7 +50,7 @@ jobs:
 
       - name: build
         run: clojure -Auberjar
-        
+
       - uses: actions/upload-artifact@v2
         with:
           name: uberjar
