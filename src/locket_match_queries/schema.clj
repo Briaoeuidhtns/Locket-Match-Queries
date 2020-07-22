@@ -7,7 +7,8 @@
    [com.walmartlabs.lacinia.schema :as schema]
    [com.walmartlabs.lacinia.util :as util]
    [locket-match-queries.db.queries :as q]
-   [locket-match-queries.api :as api]))
+   [locket-match-queries.api :as api]
+   [slingshot.slingshot :refer [throw+]]))
 
 (defn with-key
   "Bind a resolver function to an api key"
@@ -16,13 +17,21 @@
 
 (defn heroes [db] (fn [_ _ _] (q/get-heroes db)))
 
+(defn team
+  [db]
+  (fn [_ {members :of :as args}
+       _]
+    (throw+ {:type :not-implemented :args args})))
+
 (defn resolver-map
   [{:keys [db key]}]
   ;; TODO not very flexible, prob need to handle individually
   ;; also, curried for key instead of bind, since it may break with async
   ;; and requires a weird wrapper.
   ;; Don't think I can just bind for entire server either
-  (into {} (map (fn [[k f]] [k (with-key key (f db))])) {:query/heroes heroes}))
+  (into {}
+        (map (fn [[k f]] [k (with-key key (f db))]))
+        {:query/heroes heroes :query/team team}))
 
 (defn load-schema
   [system]

@@ -1,12 +1,40 @@
-{:objects {:Hero {:description "A Dota 2 Hero"
-                  :display {:description "The human readable name of the hero"
-                            :type String}
-                  :fields
-                    {:id {:description "A unique number identifying the hero"
-                          :type Int}
-                     :name {:description
-                              "The unique name used internally in the game"
-                            :type String}}}}
+{:objects
+   {:Hero {:description "A Dota 2 Hero"
+           :fields {:display {:description "The human readable name of the hero"
+                              :type String}
+                    :id {:description "A unique number identifying the hero"
+                         :type Int}
+                    :name {:description
+                             "The unique name used internally in the game"
+                           :type String}}}
+    :HeroEntry {:fields {:hero {:type (non-null :Hero)}
+                         :played_by {:type (non-null
+                                             (list (non-null
+                                                     :PlayerSuccessEntry)))}}}
+    :Item {:description "Placeholder. TODO quantity, slot, buffs, etc"
+           :fields {:id {:type (non-null Int)}}}
+    :Match {:fields {:duration {:type (non-null Int)}
+                     :players {:type (non-null :MatchPlayerEntry)}}}
+    :MatchPlayerEntry {:fields {:hero {:type (non-null :Hero)}
+                                :id {:type ID}
+                                :items {:type (non-null (list (non-null
+                                                                :Item)))}}}
+    :Player {:fields {:display {:description "The player's current username"
+                                :type String}
+                      :id {:type (non-null ID)}}}
+    :PlayerSuccessEntry {:fields {:player {:type :Player}
+                                  :total {:type (non-null Int)}
+                                  :winrate {:type (non-null Float)}
+                                  :wins {:type (non-null Int)}}}
+    :Team {:fields {:matches {:type (non-null (list (non-null :Match)))}
+                    :played_heroes {:type (non-null (list (non-null
+                                                            :HeroEntry)))}}}}
  :queries {:heroes {:description "Get all heroes"
                     :resolve :query/heroes
-                    :type (non-null (list (non-null :Hero)))}}}
+                    :type (non-null (list (non-null :Hero)))}
+           :team
+             {:args {:of {:type (non-null (list (non-null ID)))}}
+              :description
+                "Get information about the shared games of a set of accounts"
+              :resolve :query/team
+              :type :Team}}}
