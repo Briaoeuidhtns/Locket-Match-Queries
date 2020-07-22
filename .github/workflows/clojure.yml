@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache maven packages
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-maven-packages
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/deps.edn') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@master
+        with:
+          tools-deps: latest
+
+      - name: Log in to docker
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ secrets.GITHUB_TOKEN }} --password-stdin
+
+      - name: Link config file
+        run: |
+          cat << EOF > resources/config.edn
+          {:db {} :key nil}
+          EOF
+
+      - name: Run tests
+        run: clojure -Atest
+      - uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: target/coverage/
+
+      - name: build
+        run: clojure -Auberjar
+        
+      - uses: actions/upload-artifact@v2
+        with:
+          name: uberjar
+          path: target/*-standalone.jar

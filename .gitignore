@@ -12,3 +12,6 @@ pom.xml.asc
 /.nrepl-port
 
 /resources/config.edn
+/.cpcache
+
+*.sql
