@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "name": "locket",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "db"
+  ]
+}

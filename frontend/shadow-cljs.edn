@@ -1,0 +1,10 @@
+{:builds
+ {:app {:asset-path "/public"
+        :modules {:main {:init-fn app.core/main!}}
+        :output-dir "target/js"
+        :target :browser
+        :devtools {:http-root "target" :http-port 8080}
+        :dev {:compiler-options {:output-feature-set :es6}}}}
+ :dependencies [[devcards "0.2.7"] [lilactown/helix "0.0.13"]]
+ :js-options {:js-package-dirs ["../node_modules"]}
+ :source-paths ["src"]}

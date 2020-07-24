@@ -1,0 +1,13 @@
+{
+  "name": "@locket/backend",
+  "scripts": {
+    "start": "clojure -Arun",
+    "test": "clojure -Atest",
+    "test-watch": "clojure -Atest --watch",
+    "build": "clojure -Auberjar",
+    "clean": "rimraf target"
+  },
+  "devDependencies": {
+    "rimraf": "~3.0.0"
+  }
+}
