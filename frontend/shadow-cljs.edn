@@ -1,10 +1,14 @@
-{:builds
- {:app {:asset-path "/public"
-        :modules {:main {:init-fn app.core/main!}}
-        :output-dir "target/js"
-        :target :browser
-        :devtools {:http-root "target" :http-port 8080}
-        :dev {:compiler-options {:output-feature-set :es6}}}}
- :dependencies [[devcards "0.2.7"] [lilactown/helix "0.0.13"]]
+{:builds {:app {:asset-path "/js"
+                :build-hooks [(dev.build/copy-resources)]
+                :dev {:compiler-options {:output-feature-set :es6}}
+                :devtools {:http-port 8080
+                           :http-root "public"
+                           :preloads [app.dev]
+                           :reload-strategy :full}
+                :modules {:main {:init-fn app.core/main!}}
+                :output-dir "public/js"
+                :target :browser}}
+ :dependencies
+   [[devcards "0.2.7"] [lilactown/helix "0.0.13"] [cljs-bean "1.6.0"]]
  :js-options {:js-package-dirs ["../node_modules"]}
  :source-paths ["src"]}
