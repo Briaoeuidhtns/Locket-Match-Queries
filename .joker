@@ -1,2 +1,2 @@
 {:ignored-file-regexes [#".*user\.clj" #"\.#.*"]
- :known-macros [[slingshot.slingshot/try+ [catch e]]]}
+ :known-macros [[slingshot.slingshot/try+ [catch e]] app.helix/defnc]}
