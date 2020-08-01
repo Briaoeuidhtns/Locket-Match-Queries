@@ -2,19 +2,20 @@
   (:require
    [clojure.spec.alpha :as s]
    [locket-match-queries.api.spec.item :as item]
-   [locket-match-queries.api.spec.hero :as hero]))
+   [locket-match-queries.api.spec.hero :as hero]
+   [locket-match-queries.api.spec.util :as util]))
 
-(s/def ::id int?)
+(s/def ::id ::util/ID)
 
-(s/def ::player_slot int?)
-(s/def ::kills int?)
-(s/def ::deaths int?)
-(s/def ::assists int?)
-(s/def ::leaver_status int?)
-(s/def ::last_hits int?)
-(s/def ::denies int?)
-(s/def ::gold_per_min int?)
-(s/def ::xp_per_min int?)
+(s/def ::player_slot (s/int-in 0 (bit-shift-left 1 8)))
+(s/def ::kills ::util/uint16)
+(s/def ::deaths ::util/uint16)
+(s/def ::assists ::util/uint16)
+(s/def ::leaver_status (s/int-in 0 (inc 6)))
+(s/def ::last_hits ::util/uint16)
+(s/def ::denies ::util/uint16)
+(s/def ::gold_per_min ::util/uint16)
+(s/def ::xp_per_min ::util/uint16)
 (s/def ::hero_id ::hero/id)
 (s/def ::account_id ::id)
 

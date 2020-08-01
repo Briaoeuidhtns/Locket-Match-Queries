@@ -20,10 +20,13 @@
    [next.jdbc.specs] ;; to ensure loaded to instrument
    [orchestra.spec.test :as st]
    [speculative.instrument :refer [unload-blacklist]]
-   [locket-match-queries.db.queries :as q]))
+   [locket-match-queries.db.queries :as q]
+   [taoensso.timbre :as log]))
 
 (unload-blacklist)
-(st/instrument)
+;; >10x slower for running queries, prob should selectively enable
+;; (st/instrument)
+(s/check-asserts true)
 
 (defn inject-key
   "Inject the api key so it doesn't have to be bound each time
@@ -47,13 +50,15 @@
       :schema
       (lacinia/execute query-string nil nil)))
 
+(defn stop! [] (swap! system component/stop-system) :stopped)
+
 (defn start!
   []
-  (swap! system component/start-system)
-  (browse-url "http://localhost:8888/ide")
+  (let [started? (get-in @system [:status :started])]
+    (when started? (log/info "Stopping server") (stop!))
+    (swap! system component/start-system)
+    (when-not started? (browse-url "http://localhost:8888/ide")))
   :started)
-
-(defn stop! [] (swap! system component/stop-system) :stopped)
 
 (defn new-system!
   []
