@@ -19,9 +19,9 @@
    :extra-paths ["test"],
    :main-opts ["-m" "kaocha.runner"]},
   :uberjar
-  {:extra-deps {cambada {:mvn/version "1.0.7"}},
+  {:extra-deps {seancorfield/depstar {:mvn/version "1.0.96"}},
    :main-opts
-   ["-m" "cambada.uberjar" "-m" "locket-match-queries.core"]}},
+   ["-m" "hf.depstar.uberjar" "target/LocketBackend-standalone.jar" "-C" "-m" "locket-match-queries.core"]}},
  :deps
  {org.clojure/clojure {:mvn/version "1.10.1"},
   com.zaxxer/HikariCP {:mvn/version "3.4.5"},
