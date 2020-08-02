@@ -12,6 +12,11 @@
         :server (-> schema-provider
                     :schema
                     (lp/default-service {:port port})
+                    (merge
+                      {::http/allowed-origins
+                         {:creds true :allowed-origins (constantly true)}
+                       ::http/secure-headers {:content-security-policy-settings
+                                                {:object-src "'none'"}}})
                     http/create-server
                     http/start)))
     (stop [self] (http/stop server) (assoc self :server nil)))
