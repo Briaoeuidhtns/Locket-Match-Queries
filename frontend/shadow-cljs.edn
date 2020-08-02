@@ -1,5 +1,6 @@
 {:builds {:app {:asset-path "/js"
                 :build-hooks [(dev.build/copy-resources)]
+                :compiler-options {:infer-externs :auto}
                 :dev {:compiler-options {:output-feature-set :es6}}
                 :devtools {:http-port 8080
                            :http-root "public"
@@ -8,7 +9,9 @@
                 :modules {:main {:init-fn app.core/main!}}
                 :output-dir "public/js"
                 :target :browser}}
- :dependencies
-   [[devcards "0.2.7"] [lilactown/helix "0.0.13"] [cljs-bean "1.6.0"]]
+ :dependencies [[devcards "0.2.7"]
+                [lilactown/helix "0.0.13"]
+                [cljs-bean "1.6.0"]
+                [binaryage/devtools "1.0.2"]]
  :js-options {:js-package-dirs ["../node_modules"]}
  :source-paths ["src"]}
