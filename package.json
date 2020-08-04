@@ -5,5 +5,11 @@
     "frontend",
     "backend",
     "db"
-  ]
+  ],
+  "scripts": {
+    "postinstall": "patch -p1 --forward -r - < patches/closure-compiler-stack-overflow.patch || true"
+  },
+  "devDependencies": {
+    "postinstall-postinstall": "^2.1.0"
+  }
 }
