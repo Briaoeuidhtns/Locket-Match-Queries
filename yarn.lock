@@ -5,9 +5,9 @@ __metadata:
   version: 4
   cacheKey: 5
 
-"@apollo/client@npm:^3.1.1":
-  version: 3.1.1
-  resolution: "@apollo/client@npm:3.1.1"
+"@apollo/client@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "@apollo/client@npm:3.1.2"
   dependencies:
     "@types/zen-observable": ^0.8.0
     "@wry/context": ^0.5.2
@@ -28,7 +28,7 @@ __metadata:
   peerDependenciesMeta:
     react:
       optional: true
-  checksum: cc09fc7caf3340b11e809e51524366088165f7e4ad0c46f8cef78a73dd2d52eeaeff66224359c7ea86253bad3bbc7fe977d4eb82c7a4207ee0c1900c12b354ec
+  checksum: acda72746d4d9db9b32d38c5c7032adeec486b88b6a5bb25c2792d32ba2eb61007453a7f628919e50680234e043c9a8aa6f18c72fa2c5d93bbc800c65f887e4e
   languageName: node
   linkType: hard
 
@@ -232,7 +232,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@locket/backend@workspace:backend"
   dependencies:
-    rimraf: ~3.0.0
+    rimraf: ~3.0.2
   languageName: unknown
   linkType: soft
 
@@ -246,7 +246,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@locket/frontend@workspace:frontend"
   dependencies:
-    "@apollo/client": ^3.1.1
+    "@apollo/client": ^3.1.2
     "@blueprintjs/core": ^3.30.1
     "@blueprintjs/icons": ^3.20.0
     "@blueprintjs/select": ^3.13.6
@@ -257,10 +257,11 @@ __metadata:
     graphql: ^15.3.0
     react: ^16.13.1
     react-dom: ^16.13.1
-    react-refresh: 0.8.1
+    react-refresh: 0.8.3
     react-router-dom: ^5.2.0
-    rimraf: ~3.0.0
-    shadow-cljs: ~2.8.83
+    rimraf: ~3.0.2
+    shadow-cljs: ~2.10.19
+    use-error-boundary: ^1.2.3
   languageName: unknown
   linkType: soft
 
@@ -2301,10 +2302,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-refresh@npm:0.8.1":
-  version: 0.8.1
-  resolution: "react-refresh@npm:0.8.1"
-  checksum: 40d0d6e9f48b41478d92abea2f0e59bd99e528f243ebe404c2981d2d1e1ec0266b8ef6ae3be4e675d186ed137787c74e27b7667895386040e8a0a65eaf16a934
+"react-refresh@npm:0.8.3":
+  version: 0.8.3
+  resolution: "react-refresh@npm:0.8.3"
+  checksum: 38f06df8e0a20701b96e5d680838a3528d66cfb53db79843d30cb9517df3262ec596607147439975267bf0634bee77101db37298ea79b5742cc28664632f3c76
   languageName: node
   linkType: hard
 
@@ -2360,7 +2361,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^16.13.1":
+"react@npm:^16.13.1, react@npm:^16.8.6":
   version: 16.13.1
   resolution: "react@npm:16.13.1"
   dependencies:
@@ -2524,7 +2525,7 @@ resolve@^1.12.0:
   languageName: node
   linkType: hard
 
-"rimraf@npm:~3.0.0":
+"rimraf@npm:~3.0.2":
   version: 3.0.2
   resolution: "rimraf@npm:3.0.2"
   dependencies:
@@ -2618,9 +2619,9 @@ resolve@^1.12.0:
   languageName: node
   linkType: hard
 
-"shadow-cljs@npm:~2.8.83":
-  version: 2.8.110
-  resolution: "shadow-cljs@npm:2.8.110"
+"shadow-cljs@npm:~2.10.19":
+  version: 2.10.19
+  resolution: "shadow-cljs@npm:2.10.19"
   dependencies:
     node-libs-browser: ^2.0.0
     readline-sync: ^1.4.7
@@ -2630,7 +2631,7 @@ resolve@^1.12.0:
     ws: ^3.0.0
   bin:
     shadow-cljs: cli/runner.js
-  checksum: 270a938668e4b208fc7b42fd4412ba7e2d34c7e2fb6bd346e85fa058f8682379aa6f3400f4f8b6582ee7e06b8ed9b9934fbcb4f870a54fcffcdc37794086c7c6
+  checksum: fd108105a7407475c9e03a2762f66b437bcce66e7dcf4a94cb7398153587de0ccf9c9cb548e4cc050707f43f1c7ceaa80d3195513c7a88614aff3fcd9aff6f02
   languageName: node
   linkType: hard
 
@@ -2958,6 +2959,16 @@ resolve@^1.12.0:
     punycode: 1.3.2
     querystring: 0.2.0
   checksum: 537f785b16f873fdd2b63ccb7a61463b8e41370fdba95385b0102f3ed7b953c300d95b8755ec3b65f3e406372d47d16c3c989e196b25b70f42190da1fc36c56f
+  languageName: node
+  linkType: hard
+
+"use-error-boundary@npm:^1.2.3":
+  version: 1.2.3
+  resolution: "use-error-boundary@npm:1.2.3"
+  dependencies:
+    prop-types: ^15.7.2
+    react: ^16.8.6
+  checksum: 2bd42303557b5b13d9d21f251ebb1ae3949b195b81e505be68b4ff4355c999a01ddf05d6abc897b2e6321cc43f2485ef762345dd0cc665569e304ed32a1168e3
   languageName: node
   linkType: hard
 

@@ -8,6 +8,6 @@
     "clean": "rimraf target"
   },
   "devDependencies": {
-    "rimraf": "~3.0.0"
+    "rimraf": "~3.0.2"
   }
 }
