@@ -13,7 +13,6 @@
   [{:keys [played-heroes]}]
   (let [winrate-bar (css #js {:height "4px"})
         data (map (fn [{:keys [hero played_by]}]
-                    (print (:id hero))
                     {:label (:display hero)
                      :id (:id hero)
                      :isExpanded true
