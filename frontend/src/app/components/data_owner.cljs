@@ -27,26 +27,30 @@
 (defnc
   DataOwner
   []
-  (let [[{:keys [search-field displayed] :as state} dispatch!]
+  (let [[{:keys [search-field displayed]} dispatch!]
         (hook/use-reducer reducer
-                          {:search-field {:value #js []} :displayed #{}})]
-    (print state)
-    (<>
-      ($ :div
-         {:class (css #js {:display "flex"})}
-         ($ ^:native TagInput
-            {:on-change #(dispatch! {:type ::search-field-change :payload %})
-             :intent (if (:submitted search-field) "success" "primary")
-             :values (:value search-field)
-             :fill true
-             :add-on-blur true
-             :input-props #js {:type "number"}
-             :right-element
-               (when (or (seq displayed) (seq (:value search-field)))
-                 ($ ^:native Button
-                    {:icon (if (or (:submitted search-field) (empty? displayed))
-                             "cross"
-                             "refresh")
-                     :on-click #(dispatch! {:type ::reset})}))})
-         ($ ^:native Button {:on-click #(dispatch! {:type ::search})} "Fetch"))
-      ($ DataView {:members displayed}))))
+                          {:search-field {:value #js []} :displayed #{}})
+
+        any-filled? (or (seq displayed) (seq (:value search-field)))]
+    (<> ($ :div
+           {:class (css #js {:display "flex"})}
+           ($ ^:native TagInput
+              {:on-change #(dispatch! {:type ::search-field-change :payload %})
+               :intent (if (:submitted search-field) "success" "primary")
+               :values (:value search-field)
+               :fill true
+               :add-on-blur true
+               :input-props #js {:type "number"}
+               :left-icon "inherited-group"
+               :right-element (when any-filled?
+                                ($ ^:native Button
+                                   {:icon (if (or (:submitted search-field)
+                                                  (empty? displayed))
+                                            "cross"
+                                            "history")
+                                    :on-click #(dispatch! {:type ::reset})}))})
+           ($ ^:native Button
+              {:on-click #(dispatch! {:type ::search})
+               :disabled (or (not any-filled?) (:submitted search-field))}
+              "Fetch"))
+        ($ DataView {:members displayed}))))

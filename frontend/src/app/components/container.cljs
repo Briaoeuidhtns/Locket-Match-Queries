@@ -7,7 +7,7 @@
 (defnc Container
        [{:keys [dark? children]}]
        (let [class (css #js
-                         {:background-color (if dark? "#293742" "#F5F8FA")
+                         {:backgroundColor (if dark? "#293742" "#F5F8FA")
                           :position "absolute"
                           :top 0
                           :left 0

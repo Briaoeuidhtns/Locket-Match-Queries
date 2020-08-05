@@ -1,0 +1,31 @@
+query team_data_view($team: [ID!] = []) {
+  team(of: $team) {
+    played_heroes {
+      hero {
+        display
+        id
+      }
+      played_by {
+        player {
+          display
+        }
+        wins
+        total
+        winrate
+      }
+    }
+    matches {
+      duration
+      id
+      players {
+        hero {
+          name
+        }
+        player {
+          display
+          id
+        }
+      }
+    }
+  }
+}
