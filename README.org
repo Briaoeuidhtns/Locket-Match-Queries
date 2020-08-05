@@ -1,6 +1,36 @@
 * Locket Match Queries
-Drafting and stats tool for use against ametuer teams. Exisiting stats websites can go into detail about teams of professional players or individual ametuer players, but this project allows analysis of teams of ametuer players.
+Drafting and stats tool for use against amateur teams. Existing stats websites can go into detail about teams of professional players or individual amateur players, but this project allows analysis of teams of amateur players.
 
-Project originally a partner project for the Programming Languages class at SDSMT by [Matthew Reff](https://github.com/matthewReff) and [Brian Brunner](https://github.com/Briaoeuidhtns)
+Project originally a partner project for the Programming Languages class at SDSMT by [[https://github.com/matthewReff][Matthew Reff]] and [[https://github.com/Briaoeuidhtns][Brian Brunner]]
 
-** TODO usage info
+** Setup
+*** Yarn
+Yarn is required for the frontend and optional but recommended for the other packages. This repository is managed using yarn workspaces.
+
+*** Clojure
+Only the ~clojure~ command is required. Clojure builds are either via deps or shadow-cljs from NPM, so no other build tool is required.
+
+*** Docker
+The tests use GitHub packages to store docker images, and even though they're public, you must be authenticated as per [[https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-docker-for-use-with-github-packages#authenticating-to-github-packages][these instructions]]. More info [[https://github.community/t/download-from-github-package-registry-without-authentication/14407][here]].
+
+
+** General commands
+This project uses yarn workspaces to manage separate builds. To run a command for a single package, use
+
+#+begin_src shell
+yarn workspace @locket/package command
+#+end_src
+
+#+begin_src shell
+yarn workspaces foreach --parallel --interlaced --all command
+#+end_src
+
+where ~package~ is ~frontend~, ~backend~ or ~db~, and ~command~ is one of the below.
+** Running
+*** Via Yarn
+All packages should support the command ~run start~ to run the current codebase. However, this is only suitable for development on the frontend, as the other packages don't have automatic live reload.
+*** Individually
+The systems can each be started individually with their specific tools, or with yarn. See the individual packages' readme for information about the recommended way to run during development.
+
+** Tests
+The ~frontend~ and ~backend~ packages have tests that may be run with ~run tests~.

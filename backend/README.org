@@ -1,0 +1,17 @@
+* Backend
+** Dependencies
+This package depends on a running mysql db. See [[file:../db/README.org][the db readme]] for setup info.
+
+** Running
+*** ~yarn start~
+This will build and run the current package in development mode. On code changes the server must be restarted.
+
+*** ~yarn build~
+This builds an uberjar to the =target= folder, which can be run via java. This will be a production build as soon as it is producion ready.
+
+*** Via repl
+The recommended development method. The ~user~ ns contains several useful functions for development.
+
+~(start!)~ will start or restart the system. For most changes, reloading namespaces and this should be enough.
+
+For changes to the component system, run ~(new-system!)~ first to reload the entire system map.

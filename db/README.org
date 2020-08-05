@@ -1,0 +1,72 @@
+* DB
+** Docker
+This package is for the docker version.
+
+It is also available via the Github docker repo. For version info see [[https://github.com/matthewReff/Locket-Match-Queries/packages/268769][here]].
+
+*** Running
+The docker image can also be used as a development server, to ensure a consistent environment.
+
+#+begin_src shell
+docker run --name tmp-locket-db -e MYSQL_DATABASE="mydb" -e MYSQL_USER="locket-user" -e MYSQL_PASSWORD="Password" -e MYSQL_RANDOM_ROOT_PASSWORD=1 docker.pkg.github.com/matthewreff/locket-match-queries/locket-ci-db:0.1.1
+#+end_src
+
+All variables may be changed, but they must match those in =/backend/resources/config.edn=
+
+**** TODO add build/run via yarn
+
+
+** Manually
+A system mysql can also be run on it's own. The docker images are MariaDB based, but mysql should work as well
+
+*** Get mysql
+=$ sudo apt install mysql-server=
+
+*** Create a usable config, use the same names you put in the config in your sql scripts
+=$ cd resources=
+
+=$ cp exampleConfig.edn config.edn=
+
+=$ $EDITOR config.edn=
+
+Be sure to either change the database name in insertTables.sql or use the default "mydb" in the code below
+
+=$ $EDITOR insertTables.sql=
+
+*** Add database, create a user and grant it the permissions needed
+=$ sudo mysql=
+
+=mysql> source insertTables.sql=
+
+Look into password policy if your password isn't considered valid
+
+You'll probably want to keep localhost as the ip unless you have a
+remote server set up
+
+=mysql> CREATE USER '{:db_user}'@'{:db_ip}' IDENTIFIED BY '{:db_pass}';=
+
+=mysql> GRANT ALL PRIVILEGES ON {:db_name}.* TO '{:db_user}'@'{:db_ip}';=
+
+If you will be connecting from an ip other than localhost you'll need to
+allow connections from outside. Make sure that you give as few
+permissions as possible to anything that can be accessed from the
+outside.
+
+=mysql> CREATE USER '{:db_user}'@'%' IDENTIFIED BY '{db_pass}';=
+
+=mysql> GRANT ALL PRIVILEGES ON {:db_name}.* TO '{:db_user}'@'%';=
+
+*** If you have a problem with server time zone values
+=$ $EDITOR ~/../../etc/mysql/my.cnf=
+
+Add the following lines to the bottom of your sql config file
+
+#+BEGIN_QUOTE
+  [mysqld]
+
+  default-time-zone='+00:00'
+#+END_QUOTE
+
+Now restart your mysql server
+
+=$ service mysql restart=

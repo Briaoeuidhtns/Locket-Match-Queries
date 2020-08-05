@@ -1,1 +1,10 @@
-* TODO write a readme for frontend
+* Frontend
+** Dependencies
+This package depends on the backend being running. See [[file:../backend/README.org][the backend readme]] for setup info.
+
+** Running
+*** ~yarn start~
+This will build and run the current package in development mode. On code changes the site should reload.
+
+*** Shadow CLJS
+Normal shadow-cljs workflows should work fine. The main target is ~:app~
