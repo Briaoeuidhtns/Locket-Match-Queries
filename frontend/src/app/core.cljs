@@ -6,7 +6,7 @@
    ["react-dom" :as rdom]
    ["@apollo/client" :refer [ApolloClient InMemoryCache ApolloProvider]]
    ["use-error-boundary" :default use-error-boundary]
-   ["@blueprintjs/core" :refer [Button NonIdealState Pre]]
+   ["@blueprintjs/core" :refer [Button FocusStyleManager NonIdealState Pre]]
    ["emotion" :refer [css]]
    [app.components.container :refer [Container]]
    [app.components.data-owner :refer [DataOwner]]))
@@ -43,6 +43,7 @@
   "Run application startup logic."
   []
   (enable-console-print!)
+  (.onlyShowFocusOnTabs FocusStyleManager)
   (rdom/render
     ($ Container
        {:dark? true}
