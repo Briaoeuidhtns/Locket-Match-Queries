@@ -1,4 +1,5 @@
 (ns app.blueprint
+  (:refer-clojure :exclude [class])
   (:require
    [cljs-bean.core :refer [bean]]
    ["@blueprintjs/core" :refer [Classes Colors Position]]
@@ -14,6 +15,6 @@
               ;; Doesn't work without functions for both
               :key->prop #(throw {:type :not-implemented :for %}))))
 
-(def classes (constant->map Classes))
-(def colors (constant->map Colors))
+(def class (constant->map Classes))
+(def color (constant->map Colors))
 (def position (constant->map Position))
