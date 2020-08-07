@@ -1,13 +1,16 @@
 (ns app.core
   (:require
+   [app.protocols]
    [app.helix :refer [defnc]]
    [helix.core :refer [$]]
+   [helix.hooks :as hook :include-macros true]
    [cljs-bean.core :refer [bean]]
    ["react-dom" :as rdom]
    ["@apollo/client" :refer [ApolloClient InMemoryCache ApolloProvider]]
    ["use-error-boundary" :default use-error-boundary]
    ["@blueprintjs/core" :refer [Button FocusStyleManager NonIdealState Pre]]
    ["emotion" :refer [css]]
+   ["react-router-dom" :rename {BrowserRouter Router}]
    [app.components.container :refer [Container]]
    [app.components.data-owner :refer [DataOwner]]))
 
@@ -17,7 +20,9 @@
               did-catch? :didCatch
               {component-stack :componentStack :as error-info} :errorInfo}
              (bean (use-error-boundary) :recursive true)]
-         (print error-info)
+         (hook/use-effect :auto-deps
+                          (if did-catch?
+                            (print {:error error :error-info error-info})))
          (if-not did-catch?
            ($ ^:native ErrorBoundary children)
            ($ ^:native NonIdealState
@@ -52,5 +57,5 @@
              {:client (ApolloClient. #js
                                       {:uri "http://localhost:8888/api"
                                        :cache (InMemoryCache.)})}
-             ($ DataOwner))))
+             ($ Router ($ DataOwner)))))
     (js/document.getElementById "app")))

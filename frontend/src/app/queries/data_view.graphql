@@ -1,4 +1,4 @@
-query team_data_view($team: [ID!] = []) {
+query team_data_view($team: [ID!]!) {
   team(of: $team) {
     played_heroes {
       hero {
