@@ -1,6 +1,6 @@
 {
   "name": "@locket/db",
-  "version": "0.1.2",
+  "version": "0.1.2-HEAD",
   "scripts": {
     "build": "./export.py && docker build . --tag locket-ci-db:LATEST"
    ,"start": "yarn build && docker run -p3306:3306 -p33060:33060 -e MYSQL_DATABASE=mydb -e MYSQL_USER=locket-user -e MYSQL_PASSWORD=Password -e MYSQL_ROOT_PASSWORD=Password2 $@ locket-ci-db:LATEST"
