@@ -12,7 +12,9 @@
    [locket-match-queries.db.queries :as q]
    [locket-match-queries.api :as api]
    [slingshot.slingshot :refer [throw+]]
-   [taoensso.timbre :as log]))
+   [taoensso.timbre :as log]
+   [locket-match-queries.scalar :as scalar]
+   [locket-match-queries.repository :as repo]))
 
 ;; TODO make all resolvers async to take advantage of db thread pool
 
@@ -85,7 +87,16 @@
   (let [schema (with-open [r (io/reader (io/resource "schema.edn"))
                            pb (java.io.PushbackReader. r)]
                  (edn/read pb))]
+    (when (:scalars schema)
+      ;; So I don't forget and duplicate
+      (throw+
+        {:type ::scalars-defined-in-schema
+         :msg
+           "Scalars should be defined using `defscalar`, not in schema edn"}))
+    (log/info "Attaching with scalar defs" scalar/definitions)
     (-> schema
+        ;; Attach as full definitions instead of defining parsers seperately
+        (assoc :scalars scalar/definitions)
         (util/attach-resolvers (resolver-map system))
         schema/compile)))
 
