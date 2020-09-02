@@ -1,4 +1,8 @@
 #kaocha/v1
- {:plugins
-    [:kaocha.plugin/profiling :kaocha.plugin/notifier :kaocha.plugin/cloverage]
+ {:kaocha.plugin.junit-xml/target-file "target/junit.xml"
+  :kaocha.watch/ignore [".#*"]
+  :plugins [:kaocha.plugin/profiling
+            :kaocha.plugin/notifier
+            :kaocha.plugin/cloverage
+            :kaocha.plugin/junit-xml]
   :tests [{:id :unit :test-paths ["test"]}]}

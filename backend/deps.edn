@@ -12,6 +12,7 @@
   {:extra-deps
    {lambdaisland/kaocha {:mvn/version "1.0.641"},
     lambdaisland/kaocha-cloverage {:mvn/version "1.0-45"},
+    lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"},
     org.testcontainers/mysql {:mvn/version "1.14.3"},
     org.testcontainers/testcontainers {:mvn/version "1.14.3"},
     speculative/speculative {:mvn/version "0.0.3"},

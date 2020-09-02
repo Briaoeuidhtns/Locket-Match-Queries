@@ -63,16 +63,16 @@
   ([orig-fn request respond raise]
    (try+
      (let [key-req (request-keyfn request)
-           resp?   (@*routes-cache* key-req)]
+           resp? (@*routes-cache* key-req)]
        (respond
          (or
            resp?
            (if fetch-on-miss?
-             (let [now-req  (-> key-req
-                                (update :query-params
-                                        merge
-                                        (select-keys config [:key])))
-                   _        (log/info "now-req" now-req)
+             (let [now-req
+                   (-> key-req
+                       (update :query-params merge (select-keys config [:key])))
+
+                   _ (log/info "now-req" now-req)
                    new-resp (select-keys (orig-fn now-req)
                                          [:body :status :headers])]
                (swap! *routes-cache* assoc key-req new-resp)
@@ -92,19 +92,19 @@
   [cache-file]
   (fn [f]
     (with-redefs [http/request (partial intercept http/request)]
-      (binding [*routes-cache*
-                (atom
-                  (or (some-> cache-file
-                              io/file
-                              (as-> $ (if (.exists $)
-                                        $
-                                        (log/warn "Routes cache file not found:"
-                                                  $)))
-                              io/reader
-                              java.io.PushbackReader.
-                              edn/read)
-                      {}))]
-        (f)
-        (io/make-parents cache-file)
-        (with-open [ofile (io/writer cache-file)]
-          (binding [*out* ofile] (zp/zprint @*routes-cache*)))))))
+      (let [initial-routes
+            (or (some-> cache-file
+                        io/file
+                        (as-> $ (if (.exists $)
+                                  $
+                                  (log/warn "Routes cache file not found:" $)))
+                        io/reader
+                        java.io.PushbackReader.
+                        edn/read)
+                {})]
+        (binding [*routes-cache* (atom initial-routes)]
+          (f)
+          (io/make-parents cache-file)
+          (when (not= @*routes-cache* initial-routes)
+            (with-open [ofile (io/writer cache-file)]
+              (binding [*out* ofile] (zp/zprint @*routes-cache*)))))))))
