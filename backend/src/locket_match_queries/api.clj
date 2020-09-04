@@ -11,14 +11,14 @@
   (:import
    (java.time Duration)))
 
-(defrecord LimitGen [window rate remaining exit-ch]
+(defrecord LimitGen [key window rate remaining exit-ch]
   component/Lifecycle
     (start [self]
       (let [exit-ch (chan)
             remaining (atom 0)]
         (go-loop []
                  (log/info "Resetting remaining calls to" rate)
-                 (reset! remaining rate)
+                 (swap! remaining assoc key rate)
                  (alt! (timeout (.toMillis window))
                        (recur)
                        exit-ch
@@ -29,8 +29,9 @@
     (stop [self] (close! (:exit-ch self)) (dissoc self :remaining :exit-ch)))
 
 (defn new-default-limit-gen
-  []
-  (map->LimitGen {:window (Duration/ofDays 1) :rate 100000}))
+  [key]
+  {:limiter (map->LimitGen
+              {:key key :window (Duration/ofDays 1) :rate 100000})})
 
 (def remaining-in-window
   "If positive, the remaining number of calls that can be made to the api
