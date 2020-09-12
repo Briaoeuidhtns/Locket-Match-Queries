@@ -8,6 +8,7 @@
     "clean": "rimraf target"
   },
   "devDependencies": {
+    "@locket/db": "0.1.2",
     "rimraf": "~3.0.2"
   }
 }

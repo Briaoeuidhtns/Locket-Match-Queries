@@ -1,8 +1,11 @@
 {
   "name": "@locket/db",
-  "version": "0.1.2-HEAD",
+  "version": "0.1.2",
   "scripts": {
-    "build": "./export.py && docker build . --tag locket-ci-db:LATEST"
-   ,"start": "yarn build && docker run -p3306:3306 -p33060:33060 -e MYSQL_DATABASE=mydb -e MYSQL_USER=locket-user -e MYSQL_PASSWORD=Password -e MYSQL_ROOT_PASSWORD=Password2 $@ locket-ci-db:LATEST"
+    "postinstall": "yarn build",
+    "release-name": "echo docker.pkg.github.com/matthewreff/locket-match-queries/locket-ci-db:$(yarn node -p \"require('./package.json').version\")",
+    "release": "yarn build --tag $(yarn release-name) && docker push $(yarn release-name)",
+    "build": "./export.py && docker build . --tag locket-ci-db:dev-latest",
+    "start": "yarn build && docker run -p3306:3306 -p33060:33060 -e MYSQL_DATABASE=mydb -e MYSQL_USER=locket-user -e MYSQL_PASSWORD=Password -e MYSQL_ROOT_PASSWORD=Password2 $@ locket-ci-db:LATEST"
   }
 }

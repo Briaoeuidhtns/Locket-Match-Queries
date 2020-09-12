@@ -232,11 +232,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@locket/backend@workspace:backend"
   dependencies:
+    "@locket/db": 0.1.2
     rimraf: ~3.0.2
   languageName: unknown
   linkType: soft
 
-"@locket/db@workspace:db":
+"@locket/db@0.1.2, @locket/db@workspace:db":
   version: 0.0.0-use.local
   resolution: "@locket/db@workspace:db"
   languageName: unknown
