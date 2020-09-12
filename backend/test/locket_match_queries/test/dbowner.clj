@@ -9,8 +9,10 @@
 (disable-unload!)
 (disable-reload!)
 
-(defonce
-  container
-  (MySQLContainer.
-    "docker.pkg.github.com/matthewreff/locket-match-queries/locket-ci-db:0.1.2"))
+(def container-name
+  (str "docker.pkg.github.com/matthewreff/locket-match-queries/locket-ci-db:"
+       ;; `latest` should be built on yarn install from the `db` folder
+       (if (System/getenv "CI") "0.1.2" "latest")))
+
+(defonce container (MySQLContainer. container-name))
 (.start container)
