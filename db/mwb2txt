@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Don't rely on this being correct, but it's good enough for diffs.
+# To use, add mwb2txt and mysql-workbench-export to your path,
+# and add the following to your ~/.gitconfig
+
+# [diff "mysqlworkbench"]
+# textconv = mwb2txt
+
+# comment out the garbage first line that mysqlworkbench outputs
+# could output more, but I haven't seen it do so yet so ¯\_(ツ)_/¯
+echo -n '-- '
+LOCKET_EXPORT_SOURCE=$1 LOCKET_EXPORT_TARGET='--' mysql-workbench-export.py
