@@ -9,10 +9,14 @@
 (disable-unload!)
 (disable-reload!)
 
+(def db-image-version "0.1.3")
+
+;; `latest-dev` is built from the working model in /db
 (def container-name
-  (str "docker.pkg.github.com/matthewreff/locket-match-queries/locket-ci-db:"
-       ;; `latest` should be built on yarn install from the `db` folder
-       (if (System/getenv "CI") "0.1.2" "latest")))
+  (if (System/getenv "CI")
+    (str "docker.pkg.github.com/matthewreff/locket-match-queries/locket-ci-db:"
+         db-image-version)
+    "locket-ci-db:dev-latest"))
 
 (defonce container (MySQLContainer. container-name))
 (.start container)

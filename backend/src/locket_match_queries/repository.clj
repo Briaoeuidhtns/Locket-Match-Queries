@@ -11,15 +11,10 @@
    [locket-match-queries.db.system :refer [sql-format]]
    [next.jdbc :as jdbc]
    [slingshot.slingshot :refer [throw+]]
-   [spec-tools.core :refer [select-spec]]
-   [taoensso.timbre :as log]))
+   [spec-tools.core :refer [select-spec]]))
 
 (defn populate-hero-table
   ([db hero-data]
-   (jdbc/execute! (db)
-                  (-> (h/truncate :hero)
-                      sql-format)
-                  jdbc/snake-kebab-opts)
    (jdbc/execute! (db)
                   (-> (h/insert-into :hero)
                       (h/values (map #(-> %
@@ -34,10 +29,6 @@
 
 (defn populate-item-table
   [db item-data]
-  (jdbc/execute! (db)
-                 (-> (h/truncate :item)
-                     sql-format)
-                 jdbc/snake-kebab-opts)
   (jdbc/execute! (db)
                  (-> (h/insert-into :item)
                      (h/values (map #(rename-keys % {:id :item-id}) item-data))
@@ -76,7 +67,7 @@
   :args (s/cat :db :next.jdbc.specs/connectable
                :additional-units
                  (s/coll-of (s/merge ::player/additional-units
-                                       (s/keys :req-un [::player/account_id
+                                       (s/keys :req-un [::player/player_slot
                                                         ::match/match_id])))))
 
 ; Anon radiant account-id 4294967295
@@ -89,6 +80,8 @@
 
 (defn populate-player-info-table
   [db matches]
+  ;; REVIEW should we really remove anon data?
+  ;; The db now uses slot+match to identify players
   (let [players-data (filter (comp not anon-account? :account_id)
                        (mapcat (fn [{:keys [match_id players]}]
                                  (map #(assoc % :match_id match_id)
@@ -97,14 +90,17 @@
         enterable-players (map #(dissoc % :additional_units) players-data)
         additional-units
         (filter identity
-          (mapcat (fn [{:keys [additional_units match_id account_id]}]
+          (mapcat (fn [{:keys [additional_units player_slot match_id]}]
                     (map #(as-> % $
                             (select-spec ::player/additional-units $)
                             (assoc $
                               :match_id match_id
-                              :account_id account_id))
+                              :player_slot player_slot))
                       additional_units))
             players-data))]
+    ;; TODO add indicate whether this match was fetched for this user
+    ;; so we don't miss matches when getting recent >match id and they were in a
+    ;; match already fetched
     (jdbc/execute! (db)
                    (-> (h/insert-into :player-info)
                        (h/values enterable-players)
@@ -131,7 +127,7 @@
   :args (s/cat :db :next.jdbc.specs/connectable
                :matches (s/coll-of ::match/match)))
 
-(defn cache-matches
+(defn ensure-cached!
   [db match-ids]
   (let [needed (set match-ids)
         found (transduce (map :match-table/match-id)
