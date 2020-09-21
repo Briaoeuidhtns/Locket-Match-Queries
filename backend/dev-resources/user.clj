@@ -1,5 +1,8 @@
 (ns user
   (:require
+   [clojure.string :as string]
+   [clojure.tools.namespace.repl :refer [refresh]]
+   [slingshot.slingshot :refer [throw+]]
    [clojure.core.async :refer [<! >! <!! >!! go] :as a]
    [clojure.java.browse :refer [browse-url]]
    [clojure.spec.alpha :as s]
@@ -21,7 +24,9 @@
    [orchestra.spec.test :as st]
    [speculative.instrument :refer [unload-blacklist]]
    [locket-match-queries.db.queries :as q]
-   [taoensso.timbre :as log]))
+   [taoensso.timbre :as log])
+  (:import
+   (com.github.vertical_blank.sqlformatter SqlFormatter)))
 
 (unload-blacklist)
 ;; >10x slower for running queries, prob should selectively enable
@@ -69,3 +74,27 @@
 
 ;; Better spec error messages
 (alter-var-root #'s/*explain-out* (constantly expound/printer))
+
+(defn pretty-sql
+  "Format an sql query string or sequence."
+  ([query
+    &
+    {:keys [dialect indent params] :or {dialect :sql params nil indent 2}}]
+   (let [[query params]
+         (if (string? query)
+           [query (or params [])]
+           (do (when (seq params)
+                 (throw+ {:type :invalid-argument
+                          :msg "Can't specify params and give sequence"}))
+               ((juxt first rest) query)))
+
+         indent (condp #(%1 %2) indent
+                  string? indent
+                  char? (str indent)
+                  integer? (.repeat " " indent)
+                  (throw+ {:type :invalid-argument
+                           :msg "Indent should be a count or string"}))]
+     (-> dialect
+         name
+         SqlFormatter/of
+         (.format query indent params)))))
