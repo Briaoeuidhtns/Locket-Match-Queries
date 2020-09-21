@@ -1,6 +1,6 @@
 {
   "name": "@locket/db",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "scripts": {
     "postinstall": "yarn build",
     "release-name": "echo docker.pkg.github.com/matthewreff/locket-match-queries/locket-ci-db:$(yarn node -p \"require('./package.json').version\")",

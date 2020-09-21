@@ -24,10 +24,10 @@
   [db & tables]
   (into {}
         (map (fn [k] [k
-                      (jdbc/execute! (db)
-                                     (-> (h/select :*)
-                                         (h/from k)
-                                         sql/format))]))
+                      (into #{}
+                            (jdbc/execute! (db)
+                                           (sql/format {:select [:*]
+                                                        :from [k]})))]))
         tables))
 
 (t/deftest testcontainer-working
@@ -42,6 +42,8 @@
   (match-snapshot ::items (state-of *db* :item)))
 
 (t/deftest can-populate-match-tables
+  (repo/populate-hero-table *db* (<!! (api/get-hero-data setup/fake-key)))
+  (repo/populate-item-table *db* (<!! (api/get-item-data setup/fake-key)))
   (repo/populate-match-tables
     *db*
     (map #(<!! (api/get-match-data setup/fake-key :match_id %))
