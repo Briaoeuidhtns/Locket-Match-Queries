@@ -1,4 +1,5 @@
 (ns locket-match-queries.api
+  (:refer-clojure :exclude [key])
   (:require
    [camel-snake-kebab.core :as csk]
    [clj-http.client :as http]
@@ -8,7 +9,7 @@
    [clojure.core.async :refer [>!! alt! timeout go-loop chan close!] :as a]
    [taoensso.timbre :as log]
    [com.stuartsierra.component :as component]
-   [clojure.string :refer [upper-case]])
+   [clojure.string :as string])
   (:import
    (java.time Duration)))
 
@@ -27,7 +28,13 @@
       (-> self
           biginteger
           (.toString 16)
-          upper-case)))
+          string/upper-case))
+  java.util.UUID
+    (->key [self]
+      (-> self
+          .toString
+          (string/replace "-" "")
+          string/upper-case)))
 
 (defrecord LimitGen [key window rate remaining exit-ch]
   component/Lifecycle
@@ -83,14 +90,14 @@
    (fn [key-provider & {:as params}]
      (let [ch (a/chan 1 xform)
            handle (partial >!! ch)]
-       (try (->key key-provider)
-            (http/get
-              (mkurl endpt)
-              {:as :json :async? true :query-params (assoc params :key key)}
-              ;; Errors are all inst of `Exception`,
-              ;; so differentiate elsewhere
-              handle
-              handle)
+       (try (http/get (mkurl endpt)
+                      {:as :json
+                       :async? true
+                       :query-params (assoc params :key (->key key-provider))}
+                      ;; Errors are all inst of `Exception`,
+                      ;; so differentiate elsewhere
+                      handle
+                      handle)
             (catch Exception e (a/offer! ch e)))
        ch))))
 
