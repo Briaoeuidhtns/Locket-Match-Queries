@@ -7,9 +7,27 @@
    [locket-match-queries.api.spec.player :as player]
    [clojure.core.async :refer [>!! alt! timeout go-loop chan close!] :as a]
    [taoensso.timbre :as log]
-   [com.stuartsierra.component :as component])
+   [com.stuartsierra.component :as component]
+   [clojure.string :refer [upper-case]])
   (:import
    (java.time Duration)))
+
+(defprotocol KeyProvider
+  "A provider for an api key.
+
+  Mainly to provide optional support for using a `LimitGen` to provide access"
+  (->key [self]
+         "Get an api key isntance. Assumed valid for a single api call."))
+
+(extend-protocol KeyProvider
+  String
+    (->key [self] self)
+  Number
+    (->key [self]
+      (-> self
+          biginteger
+          (.toString 16)
+          upper-case)))
 
 (defrecord LimitGen [key window rate remaining exit-ch]
   component/Lifecycle
@@ -17,8 +35,8 @@
       (let [exit-ch (chan)
             remaining (atom 0)]
         (go-loop []
-                 (log/info "Resetting remaining calls to" rate)
-                 (swap! remaining assoc key rate)
+                 (log/info "Resetting remaining calls to"
+                           (reset! remaining rate))
                  (alt! (timeout (.toMillis window))
                        (recur)
                        exit-ch
@@ -26,24 +44,19 @@
         (assoc self
           :remaining remaining
           :exit-ch exit-ch)))
-    (stop [self] (close! (:exit-ch self)) (dissoc self :remaining :exit-ch)))
+    (stop [self] (close! (:exit-ch self)) (dissoc self :remaining :exit-ch))
+  KeyProvider
+    (->key [self]
+      (let [rem-inst (swap! remaining dec)]
+        (if (neg? rem-inst)
+          (throw (ex-info "Rate limited"
+                          {:type ::rate-limited :misses (- rem-inst)}))
+          (->key key)))))
 
 (defn new-default-limit-gen
+  "Create a new `LimitGen` with a rate to match valve's documented api rate limits for the given key"
   [key]
-  {:limiter (map->LimitGen
-              {:key key :window (Duration/ofDays 1) :rate 100000})})
-
-(def remaining-in-window
-  "If positive, the remaining number of calls that can be made to the api
-  in the current window.
-
-  If not positive, it is the number of attempts failed due to limiting."
-  (atom {} :validator associative?))
-
-(defn can-call-api!?
-  "Try to decrement the remaining api calls for the window, and return whether a call is allowed or not"
-  ([] nil)
-  ([key] (>= ((swap! remaining-in-window update key (fnil dec 0)) key) 0)))
+  {:key (map->LimitGen {:key key :window (Duration/ofDays 1) :rate 100000})})
 
 (defn ^:private mkurl
   [endpoint]
@@ -63,20 +76,18 @@
   response map on success or exception on failure, and then close."
   ([endpt] (api-call-fn endpt nil))
   ([endpt xform]
-   (fn [key & {:as params}]
+   (fn [key-provider & {:as params}]
      (let [ch (a/chan 1 xform)
            handle (partial >!! ch)]
-       (if (can-call-api!? key)
-         (http/get
-           (mkurl endpt)
-           {:as :json :async? true :query-params (assoc params :key key)}
-           ;; Errors are all inst of `Exception`, so differentiate elsewhere
-           handle
-           handle)
-         (>!! ch
-              (ex-info "Rate limited"
-                       {:type ::rate-limited
-                        :misses (- (@remaining-in-window key))})))
+       (try (->key key-provider)
+            (http/get
+              (mkurl endpt)
+              {:as :json :async? true :query-params (assoc params :key key)}
+              ;; Errors are all inst of `Exception`,
+              ;; so differentiate elsewhere
+              handle
+              handle)
+            (catch Exception e (a/offer! ch e)))
        ch))))
 
 (defn ^:private split-ex-handler

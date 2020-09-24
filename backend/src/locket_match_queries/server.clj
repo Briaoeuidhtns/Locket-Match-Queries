@@ -7,7 +7,7 @@
    [io.pedestal.http :as http]
    [next.jdbc :as jdbc]))
 
-(defrecord Server [server port api-key db]
+(defrecord Server [server port key db]
   component/Lifecycle
     (start [self]
       (assoc self
@@ -23,7 +23,7 @@
                                       ;; and result isn't directly used in
                                       ;; resolvers
                                       jdbc/unqualified-snake-kebab-opts)
-                               ::api-key api-key}})
+                               ::api-key key}})
               ;; HACK enable cors properly
               (assoc ::http/allowed-origins {:creds true
                                              :allowed-origins (constantly true)}
@@ -33,6 +33,4 @@
               http/start)))
     (stop [self] (http/stop server) (assoc self :server nil)))
 
-(defn new
-  [api-key]
-  {:server (component/using (map->Server {:port 8888 :api-key api-key}) [:db])})
+(defn new [] {:server (component/using (map->Server {:port 8888}) [:db :key])})
