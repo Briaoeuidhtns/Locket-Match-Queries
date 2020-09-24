@@ -15,25 +15,23 @@
 
 (defn populate-hero-table
   ([db hero-data]
-   (jdbc/execute! (db)
+   (jdbc/execute! db
                   (-> (h/insert-into :hero)
                       (h/values (map #(-> %
                                           (rename-keys {:id :hero-id})
                                           (update :name name))
                                   hero-data))
-                      sql-format)
-                  jdbc/snake-kebab-opts)))
+                      sql-format))))
 (s/fdef populate-hero-table
   :args (s/cat :db :next.jdbc.specs/connectable
                :hero-data (s/coll-of ::hero/hero)))
 
 (defn populate-item-table
   [db item-data]
-  (jdbc/execute! (db)
+  (jdbc/execute! db
                  (-> (h/insert-into :item)
                      (h/values (map #(rename-keys % {:id :item-id}) item-data))
-                     sql-format)
-                 jdbc/snake-kebab-opts))
+                     sql-format)))
 (s/fdef populate-item-table
   :args (s/cat :db :next.jdbc.specs/connectable
                :item-data (s/coll-of ::item/item)))
@@ -47,22 +45,20 @@
                                                   :order :pick-ban-order}))
                             picks_bans))
                   matches)]
-    (jdbc/execute! (db)
+    (jdbc/execute! db
                    (-> (h/insert-into :pick-ban-entry)
                        (h/values entries)
-                       sql-format)
-                   jdbc/snake-kebab-opts)))
+                       sql-format))))
 (s/fdef populate-pick-ban-entries
   :args (s/cat :db :next.jdbc.specs/connectable
                :matches (s/coll-of ::match/match)))
 
 (defn populate-additional-unit-table
   [db additional-units]
-  (jdbc/execute! (db)
+  (jdbc/execute! db
                  (-> (h/insert-into :additional-unit)
                      (h/values additional-units)
-                     sql-format)
-                 jdbc/snake-kebab-opts))
+                     sql-format)))
 (s/fdef populate-additional-unit-table
   :args (s/cat :db :next.jdbc.specs/connectable
                :additional-units
@@ -101,11 +97,10 @@
     ;; TODO add indicate whether this match was fetched for this user
     ;; so we don't miss matches when getting recent >match id and they were in a
     ;; match already fetched
-    (jdbc/execute! (db)
+    (jdbc/execute! db
                    (-> (h/insert-into :player-info)
                        (h/values enterable-players)
-                       sql-format)
-                   jdbc/snake-kebab-opts)
+                       sql-format))
     (when (seq additional-units)
       (populate-additional-unit-table db additional-units))))
 (s/fdef populate-player-info-table
@@ -115,7 +110,7 @@
 (defn populate-match-tables
   [db matches]
   (jdbc/execute!
-    (db)
+    db
     (-> (h/insert-into :match-table)
         (h/values
           (map #(dissoc (select-spec ::match/match %) :players :picks_bans)
@@ -134,12 +129,11 @@
                          conj
                          #{}
                          (jdbc/execute!
-                           (db)
+                           db
                            (-> (h/select :match-table/match-id)
                                (h/from :match-table)
                                (h/where [:in :match-table/match-id match-ids])
-                               sql-format)
-                           jdbc/snake-kebab-opts))
+                               sql-format)))
         missing (set/difference needed found)
         data-promises (doall (map (juxt identity api/get-match-data) missing))
         {data false errors true} (group-by

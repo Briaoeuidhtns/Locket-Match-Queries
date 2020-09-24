@@ -6,7 +6,7 @@
    [locket-match-queries.api.spec.hero :as hero]
    [locket-match-queries.db.system :refer [sql-format]]
    [slingshot.slingshot :refer [throw+]]
-   [honeysql.helpers :as h]
+   [honeysql.core :as sql]
    [locket-match-queries.api.spec.match :as match]
    [locket-match-queries.api.spec.player :as player]
    [locket-match-queries.api.spec.item :as item]
@@ -14,11 +14,9 @@
 
 (defn get-heroes
   [db]
-  (jdbc/execute! (db)
-                 (-> (h/select [:hero-id :id] :name)
-                     (h/from :hero)
-                     sql-format)
-                 jdbc/unqualified-snake-kebab-opts))
+  (jdbc/execute! db
+                 (sql-format {:select [[:hero-id :id] :name] :from [:hero]})))
+
 (s/fdef get-heroes
   :args (s/cat :db :next.jdbc.specs/connectable)
   :ret (s/coll-of ::hero/hero))
@@ -46,7 +44,6 @@
   :args (s/cat :db :next.jdbc.specs/connectable
                :members (s/coll-of ::player/id))
   :ret (s/coll-of (s/keys :req-un [::hero/hero])))
-
 
 (defn get-player-successes-with
   [db members hero-id]
