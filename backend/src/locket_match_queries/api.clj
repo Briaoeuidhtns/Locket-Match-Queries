@@ -44,7 +44,11 @@
         (assoc self
           :remaining remaining
           :exit-ch exit-ch)))
-    (stop [self] (close! (:exit-ch self)) (dissoc self :remaining :exit-ch))
+    (stop [self]
+      (close! exit-ch)
+      (assoc self
+        :remaining nil
+        :exit-ch nil))
   KeyProvider
     (->key [self]
       (let [rem-inst (swap! remaining dec)]
