@@ -14,7 +14,6 @@
 (t/use-fixtures
   :each
   (t/join-fixtures [setup/db
-                    setup/rate-limiter
                     (http-mocks/routes-fixture (http-mocks/routes-cache-file))
                     setup/system
                     setup/rollback]))
