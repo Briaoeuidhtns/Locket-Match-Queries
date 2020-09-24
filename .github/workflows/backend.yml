@@ -46,7 +46,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: coverage
-          path: target/coverage/
+          path: backend/target/coverage/
 
       - name: build
         run: clojure -Auberjar
@@ -54,4 +54,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: uberjar
-          path: target/*-standalone.jar
+          path: backend/target/*-standalone.jar
