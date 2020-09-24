@@ -1,5 +1,5 @@
 (ns locket-match-queries.server
-  (:refer-clojure :exclude [new])
+  (:refer-clojure :exclude [new key])
   (:require
    [com.stuartsierra.component :as component]
    [com.walmartlabs.lacinia.pedestal2 :as lp]

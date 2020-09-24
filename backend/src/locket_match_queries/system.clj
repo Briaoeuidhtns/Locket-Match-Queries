@@ -8,5 +8,5 @@
 (defn new
   [{db-config :db api-key :key}]
   (merge (db/new-comp db-config)
-         (server/new api-key)
+         (server/new)
          (api/new-default-limit-gen api-key)))
