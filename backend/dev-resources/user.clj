@@ -33,13 +33,6 @@
 ;; (st/instrument)
 (s/check-asserts true)
 
-(defn inject-key
-  "Inject the api key so it doesn't have to be bound each time
-
-  For interactive use only"
-  []
-  (intern 'locket-match-queries.api '*key* (:key config)))
-
 
 (defrecord Started [started]
   component/Lifecycle
