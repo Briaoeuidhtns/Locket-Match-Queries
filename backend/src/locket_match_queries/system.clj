@@ -5,4 +5,6 @@
    [locket-match-queries.server :as server]
    [locket-match-queries.schema :as schema]))
 
-(defn new [{:keys [db key]}] (merge (db/new-comp db) (schema/new) (server/new)))
+(defn new
+  [{db-config :db api-key :key}]
+  (merge (db/new-comp db-config) (server/new api-key)))

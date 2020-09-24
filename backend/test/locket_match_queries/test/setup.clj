@@ -20,7 +20,7 @@
 (defn rollback
   [f]
   (jdbc/with-transaction [conn ((:db *system*)) {:rollback-only true}]
-                         (binding [*db* (constantly conn)] (f))))
+                         (binding [*db* conn] (f))))
 
 (defn system
   [f]

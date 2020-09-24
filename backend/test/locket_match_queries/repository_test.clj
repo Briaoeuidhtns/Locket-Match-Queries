@@ -6,7 +6,6 @@
    [clojure.test :as t]
    [next.jdbc :as jdbc]
    [locket-match-queries.api :as api]
-   [honeysql.helpers :as h]
    [honeysql.core :as sql]
    [snap.core :refer [match-snapshot]]
    [clojure.core.async :refer [<!!] :as a]))
@@ -25,13 +24,13 @@
   (into {}
         (map (fn [k] [k
                       (into #{}
-                            (jdbc/execute! (db)
+                            (jdbc/execute! db
                                            (sql/format {:select [:*]
                                                         :from [k]})))]))
         tables))
 
 (t/deftest testcontainer-working
-  (t/is (:working? (jdbc/execute-one! (*db*) ["SELECT TRUE AS 'working?'"]))))
+  (t/is (:working? (jdbc/execute-one! *db* ["SELECT TRUE AS 'working?'"]))))
 
 (t/deftest can-populate-heroes
   (repo/populate-hero-table *db* (<!! (api/get-hero-data setup/fake-key)))

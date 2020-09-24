@@ -45,9 +45,6 @@
   ([] nil)
   ([key] (>= ((swap! remaining-in-window update key (fnil dec 0)) key) 0)))
 
-;; once to allow redef for interactive
-(defonce ^:dynamic *key* nil)
-
 (defn ^:private mkurl
   [endpoint]
   (format "https://api.steampowered.com/%s" endpoint))
