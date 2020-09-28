@@ -26,5 +26,3 @@
   (binding [*system* (component/start-system *system*)]
     (f)
     (component/stop-system *system*)))
-
-(def fake-key (java.util.UUID/randomUUID))

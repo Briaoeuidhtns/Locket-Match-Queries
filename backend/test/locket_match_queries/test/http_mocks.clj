@@ -12,6 +12,8 @@
 
 (def ^:private ns-static *ns*)
 
+(def fake-key (java.util.UUID/randomUUID))
+
 (defn routes-cache-file
   "Recommended file path to store the cache file.
   Pass a ns to get a new ns scoped cache. Otherwise the ns of this function is used"
