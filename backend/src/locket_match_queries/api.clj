@@ -6,12 +6,16 @@
    [clojure.spec.alpha :as s]
    [locket-match-queries.api.spec.match :as match]
    [locket-match-queries.api.spec.player :as player]
-   [clojure.core.async :refer [>!! alt! timeout go-loop chan close!] :as a]
+   [clojure.core.async :refer [<! >! go-loop] :as a]
    [taoensso.timbre :as log]
    [com.stuartsierra.component :as component]
-   [clojure.string :as string])
+   [clojure.string :as string]
+   [locket-match-queries.api.spec.util :as util])
   (:import
    (java.time Duration)))
+(def default-page-size
+  "The default number of results returned from api calls."
+  100)
 
 (defprotocol KeyProvider
   "A provider for an api key.
@@ -39,20 +43,20 @@
 (defrecord LimitGen [key window rate remaining exit-ch]
   component/Lifecycle
     (start [self]
-      (let [exit-ch (chan)
+      (let [exit-ch (a/chan)
             remaining (atom 0)]
         (go-loop []
                  (log/info "Resetting remaining calls to"
                            (reset! remaining rate))
-                 (alt! (timeout (.toMillis window))
-                       (recur)
-                       exit-ch
-                       (log/info "Stopping limit gen")))
+                 (a/alt! (a/timeout (.toMillis window))
+                         (recur)
+                         exit-ch
+                         (log/info "Stopping limit gen")))
         (assoc self
           :remaining remaining
           :exit-ch exit-ch)))
     (stop [self]
-      (close! exit-ch)
+      (a/close! exit-ch)
       (assoc self
         :remaining nil
         :exit-ch nil))
@@ -89,7 +93,7 @@
   ([endpt xform]
    (fn [key-provider & {:as params}]
      (let [ch (a/chan 1 xform)
-           handle (partial >!! ch)]
+           handle (partial a/offer! ch)]
        (try (http/get (mkurl endpt)
                       {:as :json
                        :async? true
@@ -124,12 +128,14 @@
 (s/fdef get-hero-data :args (s/keys*))
 
 (def recent-matches
-  "Get recent matches by player id, or all players if omitted"
+  "Get a page of recent matches by player id, or all players if omitted"
   (api-call-fn "IDOTA2Match_570/GetMatchHistory/v1"
                (map (split-ex-handler :on-success
                                       #(get-in % [:body :result :matches])))))
+(s/def ::start_at_match_id ::util/ID)
 (s/fdef recent-matches
-  :args (s/cat :params (s/keys* :opt-un [::player/account_id])))
+  :args (s/cat :params (s/keys* :opt-un [::player/account_id
+                                         ::start_at_match_id])))
 
 (def get-item-data
   (api-call-fn "IEconDOTA2_570/GetGameItems/v1"
@@ -140,3 +146,32 @@
 (defn get-unique-match-ids [matches] (into #{} (map :match_id) matches))
 (s/fdef get-unique-match-ids
   :args (s/cat :matches ::match/match))
+
+
+(defn matches-for-since
+  "Get all match ids for a player since a starting point or as far back as the
+  api allows (can't find in docs, but looks like ~500 games)"
+  ([key-provider player-id] (matches-for-since key-provider player-id ##-Inf))
+  ([key-provider player-id match-id]
+   (let [ch (a/chan
+              2
+              (comp cat (map :match_id) (take-while (partial < match-id))))]
+     (a/go (loop [anchor nil]
+             (log/debugf "pulling page starting at %s for %s" anchor player-id)
+             (let [page (<! (recent-matches key-provider
+                                            :account_id player-id
+                                            :start_at_match_id anchor))]
+               (if (instance? Exception page)
+                 ;; TODO properly handle errors
+                 (log/error "Error fetching page:" page)
+                 (when (seq page)
+                   (let [new-anchor (dec (:match_id (last page)))]
+                     (>! ch page)
+                     (when (< match-id new-anchor) (recur new-anchor)))))))
+           (a/close! ch))
+     ch)))
+
+(s/fdef matches-for-since
+  :args (s/cat :key-provider (partial satisfies? KeyProvider)
+               :player-id ::player/id
+               :match-id (s/? ::match/id)))
