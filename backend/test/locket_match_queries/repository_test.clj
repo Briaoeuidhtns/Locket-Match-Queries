@@ -32,19 +32,19 @@
   (t/is (:working? (jdbc/execute-one! *db* ["SELECT TRUE AS 'working?'"]))))
 
 (t/deftest can-populate-heroes
-  (repo/populate-hero-table *db* (<!! (api/get-hero-data setup/fake-key)))
+  (repo/populate-hero-table *db* (<!! (api/get-hero-data http-mocks/fake-key)))
   (match-snapshot ::heroes (state-of *db* :hero)))
 
 (t/deftest can-populate-items
-  (repo/populate-item-table *db* (<!! (api/get-item-data setup/fake-key)))
+  (repo/populate-item-table *db* (<!! (api/get-item-data http-mocks/fake-key)))
   (match-snapshot ::items (state-of *db* :item)))
 
 (t/deftest can-populate-match-tables
-  (repo/populate-hero-table *db* (<!! (api/get-hero-data setup/fake-key)))
-  (repo/populate-item-table *db* (<!! (api/get-item-data setup/fake-key)))
+  (repo/populate-hero-table *db* (<!! (api/get-hero-data http-mocks/fake-key)))
+  (repo/populate-item-table *db* (<!! (api/get-item-data http-mocks/fake-key)))
   (repo/populate-match-tables
     *db*
-    (map #(<!! (api/get-match-data setup/fake-key :match_id %))
+    (map #(<!! (api/get-match-data http-mocks/fake-key :match_id %))
       [5500629735 #_(aghs buffs and silencer) 5503497365 #_(ld)]))
   (match-snapshot
     ::matches
