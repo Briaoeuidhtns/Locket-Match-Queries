@@ -91,3 +91,5 @@
          name
          SqlFormatter/of
          (.format query indent params)))))
+
+(def api-key (:key config))
