@@ -147,27 +147,37 @@
 (s/fdef get-unique-match-ids
   :args (s/cat :matches ::match/match))
 
+(def throw-throwables
+  "Transducer that throws any throwables, but otherwise returns unchanged"
+  (map #(if (instance? Throwable %) (throw %) %)))
 
 (defn matches-for-since
-  "Get all match ids for a player since a starting point or as far back as the
-  api allows (can't find in docs, but looks like ~500 games)"
+  "Get a chan that will contain all match ids for a player since a starting
+  point, or as far back as the api allows.
+
+  I can't find a reference in the docs, but looks like the max is the 500 most
+  recent games.
+
+  Exceptions in api calls are put onto the chan and abort execution."
   ([key-provider player-id] (matches-for-since key-provider player-id ##-Inf))
   ([key-provider player-id match-id]
-   (let [ch (a/chan
-              2
-              (comp cat (map :match_id) (take-while (partial < match-id))))]
+   (let [ch (a/chan 2
+                    (comp ; ->
+                      throw-throwables
+                      cat
+                      (map :match_id)
+                      (take-while (partial < match-id)))
+                    ;; Insert exceptions as they are.
+                    identity)]
      (a/go (loop [anchor nil]
              (log/debugf "pulling page starting at %s for %s" anchor player-id)
              (let [page (<! (recent-matches key-provider
                                             :account_id player-id
                                             :start_at_match_id anchor))]
-               (if (instance? Exception page)
-                 ;; TODO properly handle errors
-                 (log/error "Error fetching page:" page)
-                 (when (seq page)
-                   (let [new-anchor (dec (:match_id (last page)))]
-                     (>! ch page)
-                     (when (< match-id new-anchor) (recur new-anchor)))))))
+               (>! ch page)
+               (when (and (seqable? page) (seq page))
+                  (let [new-anchor (dec (:match_id (last page)))]
+                    (when (< match-id new-anchor) (recur new-anchor))))))
            (a/close! ch))
      ch)))
 
