@@ -91,3 +91,23 @@
   :args (s/cat :db :next.jdbc.specs/connectable
                :player-id ::player/id)
   :ret :player/display)
+
+
+(defn most-recent-pulled-for
+  ([db player-id]
+   (jdbc/execute-one!
+     db
+     (sql-format
+       {:select [:match-table/match-id]
+        :from [:match-table]
+        :where
+          [:and :player-info/pulled-for [:= :player-info/account-id player-id]]
+        :join [:player-info [:= :player-info/match-id :match-table/match-id]]
+        :order-by [:match-id]
+        :limit #sql/inline 1}))))
+
+(s/fdef most-recent-pulled-for
+  :args (s/cat :db :next.jdbc.specs/connectable
+               :player-id ::player/id)
+  :ret :player/display)
+
