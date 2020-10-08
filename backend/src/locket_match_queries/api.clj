@@ -93,7 +93,7 @@
   ([endpt xform]
    (fn [key-provider & {:as params}]
      (let [ch (a/chan 1 xform)
-           handle (partial a/offer! ch)]
+           handle (fn [res] (a/offer! ch res) (a/close! ch))]
        (try (http/get (mkurl endpt)
                       {:as :json
                        :async? true
