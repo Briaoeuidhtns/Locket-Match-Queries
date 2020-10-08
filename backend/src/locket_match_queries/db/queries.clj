@@ -107,3 +107,21 @@
   :args (s/cat :db :next.jdbc.specs/connectable
                :player-id ::player/id)
   :ret (s/nilable ::match/id))
+
+(defn find-missing-matches-in
+  "Get the set difference of a supplied collection of match ids and matches
+  already cached in the database"
+  [db match-ids]
+  (transduce
+    (map :match_id)
+    conj
+    #{}
+    (jdbc/plan
+      db
+      (sql-format
+        {:with [[[:search {:columns :match_id}]
+                 {:union (map (fn [id] {:select [id]}) match-ids)}]]
+         :select [:search/match-id]
+         :from [:search]
+         :left-join [:match-table [:= :match-table/match-id :search/match-id]]
+         :where [:is :match-table/match-id nil]}))))
