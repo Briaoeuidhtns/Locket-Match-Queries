@@ -1,8 +1,10 @@
 (ns locket-match-queries.repository
   (:require
+   [clojure.core.async :as a :refer [go <!]]
    [clojure.set :as set :refer [rename-keys]]
    [clojure.spec.alpha :as s]
    [honeysql.helpers :as h]
+   [locket-match-queries.db.queries :as query]
    [locket-match-queries.api :as api]
    [locket-match-queries.api.spec.hero :as hero]
    [locket-match-queries.api.spec.item :as item]
@@ -11,7 +13,10 @@
    [locket-match-queries.db.system :refer [sql-format]]
    [next.jdbc :as jdbc]
    [slingshot.slingshot :refer [throw+]]
-   [spec-tools.core :refer [select-spec]]))
+   [spec-tools.core :refer [select-spec]]
+   [honeysql.format :as fmt]
+   [honeysql.core :as sql]
+   [taoensso.timbre :as log]))
 
 (defn populate-hero-table
   ([db hero-data]
@@ -122,24 +127,45 @@
   :args (s/cat :db :next.jdbc.specs/connectable
                :matches (s/coll-of ::match/match)))
 
+;; copypasted from honeysql's :insert-into
+(defmethod fmt/format-clause :replace-into
+  [[_ table] _]
+  (if (and (sequential? table) (sequential? (first table)))
+    (str "REPLACE INTO "
+         (fmt/to-sql (ffirst table))
+         (binding [fmt/*namespace-as-table?* false]
+           (str " ("
+                (fmt/comma-join (map fmt/to-sql (second (first table))))
+                ") "))
+         (binding [fmt/*subquery?* false] (fmt/to-sql (second table))))
+    (str "REPLACE INTO " (fmt/to-sql table))))
+(fmt/register-clause! :replace-into 60)
+
 (defn ensure-cached!
-  [db match-ids]
-  (let [needed (set match-ids)
-        found (transduce (map :match-table/match-id)
-                         conj
-                         #{}
-                         (jdbc/execute!
-                           db
-                           (-> (h/select :match-table/match-id)
-                               (h/from :match-table)
-                               (h/where [:in :match-table/match-id match-ids])
-                               sql-format)))
-        missing (set/difference needed found)
-        data-promises (doall (map (juxt identity api/get-match-data) missing))
-        {data false errors true} (group-by
-                                   (comp (partial instance? Throwable) second)
-                                   (map (fn [[k p]] [k @p]) data-promises))]
-    (populate-match-tables db data)
-    (throw+ "Error fetching some matches"
-            (-> (zipmap [:failed :causes] (apply mapv vector errors))
-                (assoc :type ::fetch-error)))))
+  [db api-key user-ids]
+  (a/go
+    (let [missing (->> user-ids
+                       (map (fn [id]
+                              (api/matches-for-since
+                                api-key
+                                id
+                                (query/most-recent-pulled-for db id))))
+                       a/merge
+                       (a/into #{})
+                       <!)
+          res (->> missing
+                   (map (partial api/get-match-data api-key :match_id))
+                   a/merge
+                   (a/into [])
+                   <!)
+          newest (reduce max missing)
+          {data false errors true} (group-by (partial instance? Throwable) res)]
+      (populate-match-tables db data)
+      (jdbc/execute-one! db
+                         (sql-format
+                           {:replace-into :user-meta
+                            :columns [:account-id :most-recent-pulled]
+                            :values (map vector user-ids (repeat newest))}))
+      (when errors
+        (throw+ "Error fetching some matches"
+                {:type ::fetch-error :errors errors})))))

@@ -92,7 +92,7 @@
   ([endpt] (api-call-fn endpt nil))
   ([endpt xform]
    (fn [key-provider & {:as params}]
-     (let [ch (a/chan 1 xform)
+     (let [ch (a/chan 1 xform identity)
            handle (fn [res] (a/offer! ch res) (a/close! ch))]
        (try (http/get (mkurl endpt)
                       {:as :json
@@ -110,9 +110,16 @@
       :or {on-success identity on-failure identity}}]
   (fn [val] ((if-not (instance? Throwable val) on-success on-failure) val)))
 
+(def throw-throwables
+  "Transducer that throws any throwables, but otherwise returns unchanged"
+  (map #(if (instance? Throwable %) (throw %) %)))
+
 (def get-match-data
-  (api-call-fn "IDOTA2Match_570/GetMatchDetails/v1"
-               (map #(get-in % [:body :result]))))
+  (api-call-fn
+    "IDOTA2Match_570/GetMatchDetails/v1"
+    (comp throw-throwables
+          (map #(or (get-in % [:body :result])
+                    (ex-info "" {:type ::this-thing-is-nil :thing %}))))))
 (s/fdef get-match-data :args (s/keys* :req-un [::match/match_id]))
 
 (def get-hero-data
@@ -147,10 +154,6 @@
 (s/fdef get-unique-match-ids
   :args (s/cat :matches ::match/match))
 
-(def throw-throwables
-  "Transducer that throws any throwables, but otherwise returns unchanged"
-  (map #(if (instance? Throwable %) (throw %) %)))
-
 (defn matches-for-since
   "Get a chan that will contain all match ids for a player since a starting
   point, or as far back as the api allows.
@@ -159,9 +162,10 @@
   recent games.
 
   Exceptions in api calls are put onto the chan and abort execution."
-  ([key-provider player-id] (matches-for-since key-provider player-id ##-Inf))
+  ([key-provider player-id] (matches-for-since key-provider player-id nil))
   ([key-provider player-id match-id]
-   (let [ch (a/chan 2
+   (let [match-id (or match-id ##-Inf)
+         ch (a/chan 2
                     (comp ; ->
                       throw-throwables
                       cat
@@ -176,8 +180,8 @@
                                             :start_at_match_id anchor))]
                (>! ch page)
                (when (and (seqable? page) (seq page))
-                  (let [new-anchor (dec (:match_id (last page)))]
-                    (when (< match-id new-anchor) (recur new-anchor))))))
+                 (let [new-anchor (dec (:match_id (last page)))]
+                   (when (< match-id new-anchor) (recur new-anchor))))))
            (a/close! ch))
      ch)))
 
