@@ -1,52 +1,45 @@
 {:aliases
- {:dev
-  {:extra-deps
-   {expound/expound {:mvn/version "0.8.5"},
-    orchestra/orchestra {:mvn/version "2020.07.12-1"},
-    com.github.vertical-blank/sql-formatter {:mvn/version "1.0.2"}},
-   :extra-paths ["dev-resources"]},
-  :populate-dev
-  {:extra-paths ["dev-resources"],
-   :main-opts ["-m" "locket-match-queries.mock-data"]},
-  :run {:main-opts ["-m" "locket-match-queries.core"]},
-  :test
-  {:extra-deps
-   {lambdaisland/kaocha {:mvn/version "1.0.641"},
-    lambdaisland/kaocha-cloverage {:mvn/version "1.0-45"},
-    lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"},
-    org.testcontainers/mysql {:mvn/version "1.14.3"},
-    org.testcontainers/testcontainers {:mvn/version "1.14.3"},
-    speculative/speculative {:mvn/version "0.0.3"},
-    zprint/zprint {:mvn/version "1.0.0"}},
-   :extra-paths ["test"],
-   :main-opts ["-m" "kaocha.runner"]},
-  :uberjar
-  {:extra-deps {seancorfield/depstar {:mvn/version "1.0.96"}},
-   :main-opts
-   ["-m"
-    "hf.depstar.uberjar"
-    "target/LocketBackend-standalone.jar"
-    "-C"
-    "-m"
-    "locket-match-queries.core"]}},
- :deps
- {org.clojure/clojure {:mvn/version "1.10.1"},
-  com.zaxxer/HikariCP {:mvn/version "3.4.5"},
-  lambdaisland/regal {:mvn/version "0.0.89"},
-  com.walmartlabs/lacinia-pedestal {:mvn/version "0.14.0"},
-  metosin/spec-tools {:mvn/version "0.10.3"},
-  honeysql/honeysql {:mvn/version "1.0.444"},
-  slingshot/slingshot {:mvn/version "0.12.2"},
-  com.stuartsierra/component {:mvn/version "1.0.0"},
-  clj-http/clj-http {:mvn/version "3.10.1"},
-  seancorfield/next.jdbc {:mvn/version "1.1.569"},
-  com.fzakaria/slf4j-timbre {:mvn/version "0.3.19"},
-  com.taoensso/timbre {:mvn/version "4.11.0-alpha1"},
-  mysql/mysql-connector-java {:mvn/version "8.0.21"},
-  cheshire/cheshire {:mvn/version "5.10.0"},
-  org.clojure/test.check {:mvn/version "1.1.0"},
-  camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.1"}},
- :mvn/repos
- {"central" {:url "https://repo1.maven.org/maven2/"},
-  "clojars" {:url "https://repo.clojars.org/"}},
- :paths ["src" "resources"]}
+   {:dev {:extra-deps {com.github.vertical-blank/sql-formatter #:mvn{:version
+                                                                       "1.0.2"}
+                       expound/expound #:mvn{:version "0.8.5"}
+                       orchestra/orchestra #:mvn{:version "2020.07.12-1"}}
+          :extra-paths ["dev-resources"]}
+    :populate-dev {:extra-paths ["dev-resources"]
+                   :main-opts ["-m" "locket-match-queries.mock-data"]}
+    :run {:main-opts ["-m" "locket-match-queries.core"]}
+    :test {:extra-deps {lambdaisland/kaocha #:mvn{:version "1.0.641"}
+                        lambdaisland/kaocha-cloverage #:mvn{:version "1.0-45"}
+                        lambdaisland/kaocha-junit-xml #:mvn{:version "0.0.76"}
+                        org.testcontainers/mysql #:mvn{:version "1.14.3"}
+                        org.testcontainers/testcontainers #:mvn{:version
+                                                                  "1.14.3"}
+                        speculative/speculative #:mvn{:version "0.0.3"}
+                        zprint/zprint #:mvn{:version "1.0.0"}}
+           :extra-paths ["test"]
+           :main-opts ["-m" "kaocha.runner"]}
+    :uberjar {:extra-deps #:seancorfield{depstar #:mvn{:version "1.0.96"}}
+              :main-opts ["-m"
+                          "hf.depstar.uberjar"
+                          "target/LocketBackend-standalone.jar"
+                          "-C"
+                          "-m"
+                          "locket-match-queries.core"]}}
+ :deps {camel-snake-kebab/camel-snake-kebab #:mvn{:version "0.4.1"}
+        cheshire/cheshire #:mvn{:version "5.10.0"}
+        clj-http/clj-http #:mvn{:version "3.10.1"}
+        com.fzakaria/slf4j-timbre #:mvn{:version "0.3.19"}
+        com.stuartsierra/component #:mvn{:version "1.0.0"}
+        com.taoensso/timbre #:mvn{:version "4.11.0-alpha1"}
+        com.walmartlabs/lacinia-pedestal #:mvn{:version "0.14.0"}
+        com.zaxxer/HikariCP #:mvn{:version "3.4.5"}
+        honeysql/honeysql #:mvn{:version "1.0.444"}
+        lambdaisland/regal #:mvn{:version "0.0.89"}
+        metosin/spec-tools #:mvn{:version "0.10.3"}
+        mysql/mysql-connector-java #:mvn{:version "8.0.21"}
+        org.clojure/clojure #:mvn{:version "1.10.1"}
+        org.clojure/test.check #:mvn{:version "1.1.0"}
+        seancorfield/next.jdbc #:mvn{:version "1.1.569"}
+        slingshot/slingshot #:mvn{:version "0.12.2"}}
+ :mvn/repos {"central" {:url "https://repo1.maven.org/maven2/"}
+             "clojars" {:url "https://repo.clojars.org/"}}
+ :paths ["src" "resources" "../node_modules"]}

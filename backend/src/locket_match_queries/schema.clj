@@ -11,7 +11,8 @@
    [locket-match-queries.db.queries :as q]
    [slingshot.slingshot :refer [throw+]]
    [taoensso.timbre :as log]
-   [locket-match-queries.scalar :as scalar]))
+   [locket-match-queries.scalar :as scalar]
+   dotaconstants))
 
 ;; TODO make all resolvers async to take advantage of db thread pool
 
@@ -29,12 +30,20 @@
 
 (defn heroes [{db :locket-match-queries.server/db} _ _] (q/get-heroes db))
 
+(defn Hero->display
+  [_ _ {hero-id :id}]
+  (:localized-name (dotaconstants/heroes hero-id)))
+
 (defn team
-  [{db :locket-match-queries.server/db} {members :of} _]
-  ;; TODO populate cache first
-  (-> {:matches ((mock #'q/get-matches-with) db members)
-       :played_heroes ((mock #'q/get-frequent-heroes-of) db members)}
-      (resolve/with-context {::team-members members})))
+  [{db :locket-match-queries.server/db
+    api-key :locket-match-queries.server/api-key}
+   {members :of}
+   _]
+  (go (try-resolve (throw-if-ex (<! (repo/ensure-cached! db api-key members)))
+                   (-> {:matches ((mock #'q/get-matches-with) db members)
+                        :played_heroes
+                          ((mock #'q/get-frequent-heroes-of) db members)}
+                       (resolve/with-context {::team-members members})))))
 
 (defn Match->players
   [{members ::team-members db :locket-match-queries.server/db} _ {match-id :id}]
@@ -62,7 +71,8 @@
    :HeroEntry/played-by HeroEntry->played-by
    :Match/players Match->players
    :MatchPlayerEntry/items MatchPlayerEntry->items
-   :Player/display-name Player->display-name})
+   :Player/display-name Player->display-name
+   :Hero/display Hero->display})
 
 (defn load
   []
