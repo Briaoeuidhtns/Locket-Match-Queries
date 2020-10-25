@@ -28,11 +28,10 @@
       ;; initial results are pretty short and boring
       (last (gen/sample (s/gen ret-spec) 50)))))
 
-(defn heroes [{db :locket-match-queries.server/db} _ _] (q/get-heroes db))
-
-(defn Hero->display
-  [_ _ {hero-id :id}]
-  (:localized-name (dotaconstants/heroes hero-id)))
+(defn heroes
+  [_ _ _]
+  (map #(set/rename-keys % {:localized-name :display})
+    (vals dotaconstants/heroes)))
 
 (defn team
   [{db :locket-match-queries.server/db
@@ -71,8 +70,7 @@
    :HeroEntry/played-by HeroEntry->played-by
    :Match/players Match->players
    :MatchPlayerEntry/items MatchPlayerEntry->items
-   :Player/display-name Player->display-name
-   :Hero/display Hero->display})
+   :Player/display-name Player->display-name})
 
 (defn load
   []

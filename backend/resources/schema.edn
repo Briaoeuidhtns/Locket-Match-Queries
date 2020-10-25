@@ -1,13 +1,13 @@
 {:objects
    {:Hero {:description "A Dota 2 Hero"
            :fields {:display {:description "The human readable name of the hero"
-                              :resolve :Hero/display
                               :type (non-null String)}
                     :id {:description "A unique number identifying the hero"
                          :type Int}
                     :name {:description
                              "The unique name used internally in the game"
-                           :type String}}}
+                           :type String}}
+           :resolve :resolve/hero}
     :HeroEntry {:fields {:hero {:type (non-null :Hero)}
                          :played_by {:resolve :HeroEntry/played-by
                                      :type (non-null

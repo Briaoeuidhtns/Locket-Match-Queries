@@ -122,14 +122,14 @@
                     (ex-info "" {:type ::this-thing-is-nil :thing %}))))))
 (s/fdef get-match-data :args (s/keys* :req-un [::match/match_id]))
 
+(defn hero-name-keyfn
+  [api-name]
+  (csk/->kebab-case-keyword (re-find #"(?<=npc_dota_hero_).*" api-name)))
+
 (def get-hero-data
-  (letfn [(process
-            [val]
-            (map #(update %
-                          :name
-                          (comp csk/->kebab-case-keyword
-                                (partial re-find #"(?<=npc_dota_hero_).*")))
-              (get-in val [:body :result :heroes])))]
+  (letfn [(process [val]
+                   (map #(update % :name hero-name-keyfn)
+                     (get-in val [:body :result :heroes])))]
     (api-call-fn "IEconDOTA2_570/GetHeroes/v1"
                  (map (split-ex-handler :on-success process)))))
 (s/fdef get-hero-data :args (s/keys*))
