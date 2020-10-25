@@ -144,28 +144,34 @@
 (defn ensure-cached!
   [db api-key user-ids]
   (a/go
-    (let [missing (->> user-ids
-                       (map (fn [id]
-                              (api/matches-for-since
-                                api-key
-                                id
-                                (query/most-recent-pulled-for db id))))
-                       a/merge
-                       (a/into #{})
-                       <!)
-          res (->> missing
-                   (map (partial api/get-match-data api-key :match_id))
-                   a/merge
-                   (a/into [])
-                   <!)
-          newest (reduce max missing)
-          {data false errors true} (group-by (partial instance? Throwable) res)]
-      (populate-match-tables db data)
-      (jdbc/execute-one! db
-                         (sql-format
-                           {:replace-into :user-meta
+    (try (let [missing (->> user-ids
+                            (map (fn [id]
+                                   (api/matches-for-since
+                                     api-key
+                                     id
+                                     (query/most-recent-pulled-for db id))))
+                            a/merge
+                            (a/into #{})
+                            <!)
+               res (->> missing
+                        (map (partial api/get-match-data api-key :match_id))
+                        a/merge
+                        (a/into [])
+                        <!)
+               newest (reduce max missing)
+               {data false errors true} (group-by (partial instance? Throwable)
+                                                  res)]
+           (jdbc/with-transaction
+             [tx db]
+             (populate-match-tables tx data)
+             (jdbc/execute-one!
+               tx
+               (sql-format {:replace-into :user-meta
                             :columns [:account-id :most-recent-pulled]
-                            :values (map vector user-ids (repeat newest))}))
-      (when errors
-        (throw+ "Error fetching some matches"
-                {:type ::fetch-error :errors errors})))))
+                            :values (map vector user-ids (repeat newest))})))
+           (when errors
+             (ex-info "Error fetching some matches"
+                      {:type ::fetch-error
+                       :errors errors
+                       :message "Error fetching some matches"})))
+         (catch Throwable th th))))

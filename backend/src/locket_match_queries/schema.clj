@@ -12,9 +12,28 @@
    [slingshot.slingshot :refer [throw+]]
    [taoensso.timbre :as log]
    [locket-match-queries.scalar :as scalar]
-   dotaconstants))
+   [clojure.core.async :as a :refer [go <!]]
+   [locket-match-queries.repository :as repo]
+   dotaconstants
+   [clojure.set :as set])
+  (:import
+   (clojure.core.async.impl.protocols ReadPort)))
 
-;; TODO make all resolvers async to take advantage of db thread pool
+;; Allow returning a channel from a resolver
+(extend-type ReadPort
+  resolve/ResolverResult
+    (on-deliver! [self cb] (a/take! self cb false)))
+
+(defmacro ^:private try-resolve
+  "Wrap the body in a try, and on exception return it as a resolve error.
+
+  Should be the topmost form inside of the go/thread call to be safe since
+  request will otherwise never return if it hits an exception."
+  [& body]
+  `(try ~@body
+        (catch Throwable t# (resolve/with-error nil (Throwable->map t#)))))
+
+(defn ^:private throw-if-ex [ex] (when (instance? Throwable ex) (throw ex)))
 
 (defn- mock
   "Get a function that validates args against the declared spec, and returns a generated value"
