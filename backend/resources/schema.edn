@@ -1,6 +1,7 @@
 {:objects
    {:Hero {:description "A Dota 2 Hero"
            :fields {:display {:description "The human readable name of the hero"
+                              :resolve :Hero/display
                               :type (non-null String)}
                     :id {:description "A unique number identifying the hero"
                          :type Int}

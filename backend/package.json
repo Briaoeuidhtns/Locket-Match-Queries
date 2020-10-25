@@ -8,7 +8,10 @@
     "clean": "rimraf target"
   },
   "devDependencies": {
-    "@locket/db": "0.1.2",
+    "@locket/db": "0.1.3",
     "rimraf": "~3.0.2"
+  },
+  "dependencies": {
+    "dotaconstants": "^6.38.0"
   }
 }
