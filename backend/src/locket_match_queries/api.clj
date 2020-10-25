@@ -174,7 +174,10 @@
                     ;; Insert exceptions as they are.
                     identity)]
      (a/go (loop [anchor nil]
-             (log/debugf "pulling page starting at %s for %s" anchor player-id)
+             (log/debugf "pulling page starting at %s to max %s for %s"
+                         anchor
+                         match-id
+                         player-id)
              (let [page (<! (recent-matches key-provider
                                             :account_id player-id
                                             :start_at_match_id anchor))]
