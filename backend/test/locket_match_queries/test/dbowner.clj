@@ -9,14 +9,8 @@
 (disable-unload!)
 (disable-reload!)
 
-(def db-image-version "0.1.3")
-
 ;; `latest-dev` is built from the working model in /db
-(def container-name
-  (if (System/getenv "CI")
-    (str "docker.pkg.github.com/matthewreff/locket-match-queries/locket-ci-db:"
-         db-image-version)
-    "locket-ci-db:dev-latest"))
+(def container-name "locket-ci-db:dev-latest")
 
 (defonce container (MySQLContainer. container-name))
 (.start container)
