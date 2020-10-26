@@ -10,7 +10,7 @@ defaults:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
@@ -32,6 +32,12 @@ jobs:
         with:
           tools-deps: latest
 
+      - name: Install mysql-workbench
+        run: sudo ansible -m apt -a deb=https://dev.mysql.com/get/Downloads/MySQLGUITools/mysql-workbench-community_8.0.22-1ubuntu20.04_amd64.deb localhost
+
+      - name: Install npm deps
+        run: xvfb-run yarn install --inline-builds
+
       - name: Log in to docker
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ secrets.GITHUB_TOKEN }} --password-stdin
 
@@ -42,7 +48,8 @@ jobs:
           EOF
 
       - name: Run tests
-        run: clojure -Atest
+        run: yarn workspace @locket/backend test
+
       - uses: actions/upload-artifact@v2
         with:
           name: coverage
