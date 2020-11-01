@@ -6,3 +6,6 @@
 .pnp.*
 
 node_modules/
+
+*/.idea/*
+.idea/*
