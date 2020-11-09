@@ -9,4 +9,4 @@
 (s/def ::display
   (regal-spec/spec
     [:cat ::util/word [:repeat [:cat [:alt \- \space] ::util/word] 0 4]]))
-(s/def ::hero (s/keys :req-un [::id ::name ::display]))
+(s/def ::hero (s/keys :req-un [::id ::name] :opt-un [::display]))

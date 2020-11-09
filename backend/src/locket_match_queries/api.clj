@@ -105,6 +105,8 @@
             (catch Exception e (a/offer! ch e)))
        ch))))
 
+(s/def ::key-provider (partial satisfies? KeyProvider))
+
 (defn ^:private split-ex-handler
   [& {:keys [on-success on-failure]
       :or {on-success identity on-failure identity}}]
@@ -120,11 +122,13 @@
     (comp throw-throwables
           (map #(or (get-in % [:body :result])
                     (ex-info "" {:type ::this-thing-is-nil :thing %}))))))
-(s/fdef get-match-data :args (s/keys* :req-un [::match/match_id]))
+(s/fdef get-match-data
+  :args (s/cat :key-provider ::key-provider
+               :params (s/keys* :req-un [::match/match_id])))
 
 (defn hero-name-keyfn
   [api-name]
-  (csk/->kebab-case-keyword (re-find #"(?<=npc_dota_hero_).*" api-name)))
+  (csk/->kebab-case-string (re-find #"(?<=npc_dota_hero_).*" api-name)))
 
 (def get-hero-data
   (letfn [(process [val]
@@ -132,7 +136,9 @@
                      (get-in val [:body :result :heroes])))]
     (api-call-fn "IEconDOTA2_570/GetHeroes/v1"
                  (map (split-ex-handler :on-success process)))))
-(s/fdef get-hero-data :args (s/keys*))
+(s/fdef get-hero-data
+  :args (s/cat :key-provider ::key-provider
+               :params (s/keys*)))
 
 (def recent-matches
   "Get a page of recent matches by player id, or all players if omitted"
@@ -141,18 +147,17 @@
                                       #(get-in % [:body :result :matches])))))
 (s/def ::start_at_match_id ::util/ID)
 (s/fdef recent-matches
-  :args (s/cat :params (s/keys* :opt-un [::player/account_id
+  :args (s/cat :key-provider ::key-provider
+               :params (s/keys* :opt-un [::player/account_id
                                          ::start_at_match_id])))
 
 (def get-item-data
   (api-call-fn "IEconDOTA2_570/GetGameItems/v1"
                (map (split-ex-handler :on-success
                                       #(get-in % [:body :result :items])))))
-(s/fdef get-item-data :args (s/keys*))
-
-(defn get-unique-match-ids [matches] (into #{} (map :match_id) matches))
-(s/fdef get-unique-match-ids
-  :args (s/cat :matches ::match/match))
+(s/fdef get-item-data
+  :args (s/cat :key-provider ::key-provider
+               :params (s/keys*)))
 
 (defn matches-for-since
   "Get a chan that will contain all match ids for a player since a starting
@@ -191,4 +196,4 @@
 (s/fdef matches-for-since
   :args (s/cat :key-provider (partial satisfies? KeyProvider)
                :player-id ::player/id
-               :match-id (s/? ::match/id)))
+               :match-id (s/? (s/nilable ::match/id))))

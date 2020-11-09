@@ -11,10 +11,10 @@
 (s/def ::duration ::util/uint16)
 
 ;; https://dev.dota2.com/showthread.php?t=57234
-(s/def ::tower_status (s/int-in 0 (bit-shift-left 1 10)))
+(s/def ::tower_status (s/int-in 0 (bit-shift-left 1 11)))
 (s/def ::tower_status_dire ::tower_status)
 (s/def ::tower_status_radiant ::tower_status)
-(s/def ::barracks_status (s/int-in 0 (bit-shift-left 1 5)))
+(s/def ::barracks_status (s/int-in 0 (bit-shift-left 1 6)))
 (s/def ::barracks_status_dire ::barracks_status)
 (s/def ::barracks_status_radiant ::barracks_status)
 (s/def ::first_blood_time ::duration)
