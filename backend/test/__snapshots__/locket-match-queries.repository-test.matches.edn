@@ -1,28 +1,4 @@
-{:additional-unit #{#:additional_unit{:ai_differentiator 1
-                     :backpack_0 0
-                     :backpack_1 0
-                     :backpack_2 0
-                     :backpack_3 nil
-                     :item_0 50
-                     :item_1 172
-                     :item_2 208
-                     :item_3 11
-                     :item_4 168
-                     :item_5 0
-                     :match_id 5503497365
-                     :player_slot 2
-                     :unitname "spirit_bear"}}
- :match-table #{#:match_table{:barracks_status_dire 48
-                 :barracks_status_radiant 63
-                 :dire_score 23
-                 :duration 1926
-                 :first_blood_time 36
-                 :match_id 5503497365
-                 :radiant_score 23
-                 :radiant_win 1
-                 :tower_status_dire 384
-                 :tower_status_radiant 1846}
-                #:match_table{:barracks_status_dire 63
+{:match-table #{{:barracks_status_dire 63
                  :barracks_status_radiant 48
                  :dire_score 39
                  :duration 2502
@@ -31,531 +7,173 @@
                  :radiant_score 37
                  :radiant_win 0
                  :tower_status_dire 1844
-                 :tower_status_radiant 256}}
- :pick-ban-entry #{#:pick_ban_entry{:hero_id 1
+                 :tower_status_radiant 256}
+                {:barracks_status_dire 48
+                 :barracks_status_radiant 63
+                 :dire_score 23
+                 :duration 1926
+                 :first_blood_time 36
+                 :match_id 5503497365
+                 :radiant_score 23
+                 :radiant_win 1
+                 :tower_status_dire 384
+                 :tower_status_radiant 1846}}
+ :pick-ban-entry #{{:hero_id 1
                     :is_pick 0
                     :is_radiant 0
                     :match_id 5500629735
                     :pick_ban_order 12}
-                   #:pick_ban_entry{:hero_id 106
+                   {:hero_id 106
                     :is_pick 1
                     :is_radiant 1
                     :match_id 5503497365
                     :pick_ban_order 9}
-                   #:pick_ban_entry{:hero_id 109
+                   {:hero_id 109
                     :is_pick 1
                     :is_radiant 0
                     :match_id 5503497365
                     :pick_ban_order 6}
-                   #:pick_ban_entry{:hero_id 12
+                   {:hero_id 12
                     :is_pick 0
                     :is_radiant 1
                     :match_id 5500629735
                     :pick_ban_order 15}
-                   #:pick_ban_entry{:hero_id 126
+                   {:hero_id 126
                     :is_pick 0
                     :is_radiant 0
                     :match_id 5503497365
                     :pick_ban_order 12}
-                   #:pick_ban_entry{:hero_id 129
+                   {:hero_id 129
                     :is_pick 1
                     :is_radiant 0
                     :match_id 5500629735
                     :pick_ban_order 5}
-                   #:pick_ban_entry{:hero_id 13
+                   {:hero_id 13
                     :is_pick 1
                     :is_radiant 0
                     :match_id 5500629735
                     :pick_ban_order 9}
-                   #:pick_ban_entry{:hero_id 2
+                   {:hero_id 2
                     :is_pick 1
                     :is_radiant 0
                     :match_id 5503497365
                     :pick_ban_order 2}
-                   #:pick_ban_entry{:hero_id 3
+                   {:hero_id 3
                     :is_pick 1
                     :is_radiant 1
                     :match_id 5503497365
                     :pick_ban_order 1}
-                   #:pick_ban_entry{:hero_id 31
+                   {:hero_id 31
                     :is_pick 1
                     :is_radiant 1
                     :match_id 5500629735
                     :pick_ban_order 0}
-                   #:pick_ban_entry{:hero_id 32
+                   {:hero_id 32
                     :is_pick 0
                     :is_radiant 0
                     :match_id 5500629735
                     :pick_ban_order 14}
-                   #:pick_ban_entry{:hero_id 36
+                   {:hero_id 36
                     :is_pick 1
                     :is_radiant 0
                     :match_id 5503497365
                     :pick_ban_order 10}
-                   #:pick_ban_entry{:hero_id 39
+                   {:hero_id 39
                     :is_pick 1
                     :is_radiant 1
                     :match_id 5500629735
                     :pick_ban_order 7}
-                   #:pick_ban_entry{:hero_id 48
+                   {:hero_id 48
                     :is_pick 1
                     :is_radiant 1
                     :match_id 5503497365
                     :pick_ban_order 0}
-                   #:pick_ban_entry{:hero_id 48
+                   {:hero_id 48
                     :is_pick 1
                     :is_radiant 1
                     :match_id 5500629735
                     :pick_ban_order 6}
-                   #:pick_ban_entry{:hero_id 58
+                   {:hero_id 58
                     :is_pick 0
                     :is_radiant 0
                     :match_id 5503497365
                     :pick_ban_order 14}
-                   #:pick_ban_entry{:hero_id 67
+                   {:hero_id 67
                     :is_pick 1
                     :is_radiant 0
                     :match_id 5500629735
                     :pick_ban_order 4}
-                   #:pick_ban_entry{:hero_id 7
+                   {:hero_id 7
                     :is_pick 1
                     :is_radiant 0
                     :match_id 5500629735
                     :pick_ban_order 1}
-                   #:pick_ban_entry{:hero_id 70
+                   {:hero_id 70
                     :is_pick 0
                     :is_radiant 0
                     :match_id 5503497365
                     :pick_ban_order 11}
-                   #:pick_ban_entry{:hero_id 70
+                   {:hero_id 70
                     :is_pick 0
                     :is_radiant 0
                     :match_id 5500629735
                     :pick_ban_order 13}
-                   #:pick_ban_entry{:hero_id 70
+                   {:hero_id 70
                     :is_pick 1
                     :is_radiant 0
                     :match_id 5503497365
                     :pick_ban_order 5}
-                   #:pick_ban_entry{:hero_id 73
+                   {:hero_id 73
                     :is_pick 1
                     :is_radiant 1
                     :match_id 5500629735
                     :pick_ban_order 8}
-                   #:pick_ban_entry{:hero_id 75
+                   {:hero_id 75
                     :is_pick 1
                     :is_radiant 1
                     :match_id 5500629735
                     :pick_ban_order 2}
-                   #:pick_ban_entry{:hero_id 76
+                   {:hero_id 76
                     :is_pick 0
                     :is_radiant 0
                     :match_id 5503497365
                     :pick_ban_order 13}
-                   #:pick_ban_entry{:hero_id 8
+                   {:hero_id 8
                     :is_pick 0
                     :is_radiant 0
                     :match_id 5500629735
                     :pick_ban_order 11}
-                   #:pick_ban_entry{:hero_id 80
+                   {:hero_id 80
                     :is_pick 1
                     :is_radiant 0
                     :match_id 5503497365
                     :pick_ban_order 8}
-                   #:pick_ban_entry{:hero_id 9
+                   {:hero_id 9
                     :is_pick 1
                     :is_radiant 0
                     :match_id 5503497365
                     :pick_ban_order 3}
-                   #:pick_ban_entry{:hero_id 91
+                   {:hero_id 91
                     :is_pick 1
                     :is_radiant 0
                     :match_id 5500629735
                     :pick_ban_order 3}
-                   #:pick_ban_entry{:hero_id 95
+                   {:hero_id 95
                     :is_pick 1
                     :is_radiant 1
                     :match_id 5503497365
                     :pick_ban_order 7}
-                   #:pick_ban_entry{:hero_id 98
+                   {:hero_id 98
                     :is_pick 1
                     :is_radiant 1
                     :match_id 5503497365
                     :pick_ban_order 4}
-                   #:pick_ban_entry{:hero_id 99
+                   {:hero_id 99
                     :is_pick 0
                     :is_radiant 0
                     :match_id 5500629735
                     :pick_ban_order 10}}
- :player-info #{#:player_info{:account_id 919190860
-                 :assists 8
-                 :backpack_0 0
-                 :backpack_1 0
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 2
-                 :denies 2
-                 :gold_per_min 720.0
-                 :hero_id 109
-                 :item_0 160
-                 :item_1 147
-                 :item_2 236
-                 :item_3 0
-                 :item_4 116
-                 :item_5 63
-                 :item_neutral 331
-                 :kills 4
-                 :last_hits 375
-                 :leaver_status 0
-                 :match_id 5503497365
-                 :player_slot 0
-                 :xp_per_min 718.0}
-                #:player_info{:account_id 463297405
-                 :assists 9
-                 :backpack_0 0
-                 :backpack_1 0
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 1
-                 :denies 9
-                 :gold_per_min 597.0
-                 :hero_id 80
-                 :item_0 187
-                 :item_1 39
-                 :item_2 261
-                 :item_3 0
-                 :item_4 0
-                 :item_5 0
-                 :item_neutral 359
-                 :kills 6
-                 :last_hits 256
-                 :leaver_status 0
-                 :match_id 5503497365
-                 :player_slot 2
-                 :xp_per_min 755.0}
-                #:player_info{:account_id 9297930
-                 :assists 10
-                 :backpack_0 0
-                 :backpack_1 0
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 10
-                 :denies 0
-                 :gold_per_min 273.0
-                 :hero_id 7
-                 :item_0 180
-                 :item_1 40
-                 :item_2 73
-                 :item_3 1
-                 :item_4 43
-                 :item_5 108
-                 :item_neutral 289
-                 :kills 4
-                 :last_hits 71
-                 :leaver_status 0
-                 :match_id 5500629735
-                 :player_slot 0
-                 :xp_per_min 395.0}
-                #:player_info{:account_id 126123567
-                 :assists 12
-                 :backpack_0 0
-                 :backpack_1 0
-                 :backpack_2 188
-                 :backpack_3 nil
-                 :deaths 4
-                 :denies 1
-                 :gold_per_min 313.0
-                 :hero_id 9
-                 :item_0 100
-                 :item_1 180
-                 :item_2 75
-                 :item_3 102
-                 :item_4 36
-                 :item_5 39
-                 :item_neutral 288
-                 :kills 4
-                 :last_hits 39
-                 :leaver_status 0
-                 :match_id 5503497365
-                 :player_slot 1
-                 :xp_per_min 461.0}
-                #:player_info{:account_id 93045428
-                 :assists 15
-                 :backpack_0 0
-                 :backpack_1 0
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 3
-                 :denies 2
-                 :gold_per_min 1076.0
-                 :hero_id 73
-                 :item_0 63
-                 :item_1 116
-                 :item_2 208
-                 :item_3 137
-                 :item_4 112
-                 :item_5 119
-                 :item_neutral 364
-                 :kills 15
-                 :last_hits 421
-                 :leaver_status 0
-                 :match_id 5500629735
-                 :player_slot 129
-                 :xp_per_min 870.0}
-                #:player_info{:account_id 170659123
-                 :assists 17
-                 :backpack_0 0
-                 :backpack_1 38
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 6
-                 :denies 13
-                 :gold_per_min 652.0
-                 :hero_id 48
-                 :item_0 147
-                 :item_1 156
-                 :item_2 36
-                 :item_3 139
-                 :item_4 63
-                 :item_5 116
-                 :item_neutral 300
-                 :kills 6
-                 :last_hits 391
-                 :leaver_status 0
-                 :match_id 5500629735
-                 :player_slot 132
-                 :xp_per_min 768.0}
-                #:player_info{:account_id 142240970
-                 :assists 11
-                 :backpack_0 0
-                 :backpack_1 0
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 1
-                 :denies 3
-                 :gold_per_min 372.0
-                 :hero_id 48
-                 :item_0 81
-                 :item_1 214
-                 :item_2 36
-                 :item_3 24
-                 :item_4 108
-                 :item_5 0
-                 :item_neutral 289
-                 :kills 5
-                 :last_hits 173
-                 :leaver_status 0
-                 :match_id 5503497365
-                 :player_slot 130
-                 :xp_per_min 526.0}
-                #:player_info{:account_id 110512426
-                 :assists 17
-                 :backpack_0 0
-                 :backpack_1 0
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 8
-                 :denies 12
-                 :gold_per_min 493.0
-                 :hero_id 39
-                 :item_0 96
-                 :item_1 116
-                 :item_2 63
-                 :item_3 24
-                 :item_4 77
-                 :item_5 77
-                 :item_neutral 311
-                 :kills 5
-                 :last_hits 249
-                 :leaver_status 0
-                 :match_id 5500629735
-                 :player_slot 130
-                 :xp_per_min 688.0}
-                #:player_info{:account_id 484350830
-                 :assists 16
-                 :backpack_0 0
-                 :backpack_1 0
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 9
-                 :denies 8
-                 :gold_per_min 421.0
-                 :hero_id 75
-                 :item_0 102
-                 :item_1 254
-                 :item_2 43
-                 :item_3 247
-                 :item_4 63
-                 :item_5 247
-                 :item_neutral 336
-                 :kills 11
-                 :last_hits 94
-                 :leaver_status 0
-                 :match_id 5500629735
-                 :player_slot 131
-                 :xp_per_min 614.0}
-                #:player_info{:account_id 80581870
-                 :assists 23
-                 :backpack_0 0
-                 :backpack_1 0
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 11
-                 :denies 3
-                 :gold_per_min 289.0
-                 :hero_id 31
-                 :item_0 0
-                 :item_1 254
-                 :item_2 188
-                 :item_3 29
-                 :item_4 0
-                 :item_5 232
-                 :item_neutral 298
-                 :kills 1
-                 :last_hits 40
-                 :leaver_status 0
-                 :match_id 5500629735
-                 :player_slot 128
-                 :xp_per_min 516.0}
-                #:player_info{:account_id 191107722
-                 :assists 10
-                 :backpack_0 0
-                 :backpack_1 0
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 7
-                 :denies 0
-                 :gold_per_min 341.0
-                 :hero_id 2
-                 :item_0 214
-                 :item_1 210
-                 :item_2 102
-                 :item_3 36
-                 :item_4 43
-                 :item_5 0
-                 :item_neutral 326
-                 :kills 5
-                 :last_hits 49
-                 :leaver_status 0
-                 :match_id 5503497365
-                 :player_slot 4
-                 :xp_per_min 465.0}
-                #:player_info{:account_id 174845600
-                 :assists 3
-                 :backpack_0 0
-                 :backpack_1 0
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 8
-                 :denies 26
-                 :gold_per_min 543.0
-                 :hero_id 95
-                 :item_0 145
-                 :item_1 36
-                 :item_2 116
-                 :item_3 63
-                 :item_4 244
-                 :item_5 170
-                 :item_neutral 361
-                 :kills 8
-                 :last_hits 229
-                 :leaver_status 0
-                 :match_id 5503497365
-                 :player_slot 128
-                 :xp_per_min 688.0}
-                #:player_info{:account_id 149354466
-                 :assists 8
-                 :backpack_0 0
-                 :backpack_1 0
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 9
-                 :denies 7
-                 :gold_per_min 385.0
-                 :hero_id 36
-                 :item_0 36
-                 :item_1 231
-                 :item_2 90
-                 :item_3 73
-                 :item_4 73
-                 :item_5 0
-                 :item_neutral 298
-                 :kills 4
-                 :last_hits 109
-                 :leaver_status 0
-                 :match_id 5503497365
-                 :player_slot 3
-                 :xp_per_min 440.0}
-                #:player_info{:account_id 198232222
-                 :assists 6
-                 :backpack_0 0
-                 :backpack_1 11
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 5
-                 :denies 5
-                 :gold_per_min 449.0
-                 :hero_id 98
-                 :item_0 180
-                 :item_1 178
-                 :item_2 226
-                 :item_3 90
-                 :item_4 36
-                 :item_5 125
-                 :item_neutral 306
-                 :kills 1
-                 :last_hits 224
-                 :leaver_status 0
-                 :match_id 5503497365
-                 :player_slot 129
-                 :xp_per_min 505.0}
-                #:player_info{:account_id 252097448
-                 :assists 6
-                 :backpack_0 265
-                 :backpack_1 0
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 7
-                 :denies 2
-                 :gold_per_min 211.0
-                 :hero_id 3
-                 :item_0 244
-                 :item_1 36
-                 :item_2 180
-                 :item_3 218
-                 :item_4 254
-                 :item_5 188
-                 :item_neutral 287
-                 :kills 2
-                 :last_hits 14
-                 :leaver_status 0
-                 :match_id 5503497365
-                 :player_slot 131
-                 :xp_per_min 308.0}
-                #:player_info{:account_id 83497149
-                 :assists 7
-                 :backpack_0 365
-                 :backpack_1 41
-                 :backpack_2 0
-                 :backpack_3 nil
-                 :deaths 8
-                 :denies 13
-                 :gold_per_min 641.0
-                 :hero_id 13
-                 :item_0 100
-                 :item_1 63
-                 :item_2 158
-                 :item_3 1
-                 :item_4 116
-                 :item_5 168
-                 :item_neutral 379
-                 :kills 21
-                 :last_hits 326
-                 :leaver_status 0
-                 :match_id 5500629735
-                 :player_slot 4
-                 :xp_per_min 853.0}
-                #:player_info{:account_id 244795135
+ :player-info #{{:account_id 244795135
                  :assists 7
                  :backpack_0 41
                  :backpack_1 0
@@ -578,7 +196,329 @@
                  :match_id 5503497365
                  :player_slot 132
                  :xp_per_min 577.0}
-                #:player_info{:account_id 200512
+                {:account_id 919190860
+                 :assists 8
+                 :backpack_0 0
+                 :backpack_1 0
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 2
+                 :denies 2
+                 :gold_per_min 720.0
+                 :hero_id 109
+                 :item_0 160
+                 :item_1 147
+                 :item_2 236
+                 :item_3 0
+                 :item_4 116
+                 :item_5 63
+                 :item_neutral 331
+                 :kills 4
+                 :last_hits 375
+                 :leaver_status 0
+                 :match_id 5503497365
+                 :player_slot 0
+                 :xp_per_min 718.0}
+                {:account_id 83497149
+                 :assists 7
+                 :backpack_0 365
+                 :backpack_1 41
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 8
+                 :denies 13
+                 :gold_per_min 641.0
+                 :hero_id 13
+                 :item_0 100
+                 :item_1 63
+                 :item_2 158
+                 :item_3 1
+                 :item_4 116
+                 :item_5 168
+                 :item_neutral 379
+                 :kills 21
+                 :last_hits 326
+                 :leaver_status 0
+                 :match_id 5500629735
+                 :player_slot 4
+                 :xp_per_min 853.0}
+                {:account_id 191107722
+                 :assists 10
+                 :backpack_0 0
+                 :backpack_1 0
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 7
+                 :denies 0
+                 :gold_per_min 341.0
+                 :hero_id 2
+                 :item_0 214
+                 :item_1 210
+                 :item_2 102
+                 :item_3 36
+                 :item_4 43
+                 :item_5 0
+                 :item_neutral 326
+                 :kills 5
+                 :last_hits 49
+                 :leaver_status 0
+                 :match_id 5503497365
+                 :player_slot 4
+                 :xp_per_min 465.0}
+                {:account_id 252097448
+                 :assists 6
+                 :backpack_0 265
+                 :backpack_1 0
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 7
+                 :denies 2
+                 :gold_per_min 211.0
+                 :hero_id 3
+                 :item_0 244
+                 :item_1 36
+                 :item_2 180
+                 :item_3 218
+                 :item_4 254
+                 :item_5 188
+                 :item_neutral 287
+                 :kills 2
+                 :last_hits 14
+                 :leaver_status 0
+                 :match_id 5503497365
+                 :player_slot 131
+                 :xp_per_min 308.0}
+                {:account_id 80581870
+                 :assists 23
+                 :backpack_0 0
+                 :backpack_1 0
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 11
+                 :denies 3
+                 :gold_per_min 289.0
+                 :hero_id 31
+                 :item_0 0
+                 :item_1 254
+                 :item_2 188
+                 :item_3 29
+                 :item_4 0
+                 :item_5 232
+                 :item_neutral 298
+                 :kills 1
+                 :last_hits 40
+                 :leaver_status 0
+                 :match_id 5500629735
+                 :player_slot 128
+                 :xp_per_min 516.0}
+                {:account_id 149354466
+                 :assists 8
+                 :backpack_0 0
+                 :backpack_1 0
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 9
+                 :denies 7
+                 :gold_per_min 385.0
+                 :hero_id 36
+                 :item_0 36
+                 :item_1 231
+                 :item_2 90
+                 :item_3 73
+                 :item_4 73
+                 :item_5 0
+                 :item_neutral 298
+                 :kills 4
+                 :last_hits 109
+                 :leaver_status 0
+                 :match_id 5503497365
+                 :player_slot 3
+                 :xp_per_min 440.0}
+                {:account_id 110512426
+                 :assists 17
+                 :backpack_0 0
+                 :backpack_1 0
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 8
+                 :denies 12
+                 :gold_per_min 493.0
+                 :hero_id 39
+                 :item_0 96
+                 :item_1 116
+                 :item_2 63
+                 :item_3 24
+                 :item_4 77
+                 :item_5 77
+                 :item_neutral 311
+                 :kills 5
+                 :last_hits 249
+                 :leaver_status 0
+                 :match_id 5500629735
+                 :player_slot 130
+                 :xp_per_min 688.0}
+                {:account_id 142240970
+                 :assists 11
+                 :backpack_0 0
+                 :backpack_1 0
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 1
+                 :denies 3
+                 :gold_per_min 372.0
+                 :hero_id 48
+                 :item_0 81
+                 :item_1 214
+                 :item_2 36
+                 :item_3 24
+                 :item_4 108
+                 :item_5 0
+                 :item_neutral 289
+                 :kills 5
+                 :last_hits 173
+                 :leaver_status 0
+                 :match_id 5503497365
+                 :player_slot 130
+                 :xp_per_min 526.0}
+                {:account_id 170659123
+                 :assists 17
+                 :backpack_0 0
+                 :backpack_1 38
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 6
+                 :denies 13
+                 :gold_per_min 652.0
+                 :hero_id 48
+                 :item_0 147
+                 :item_1 156
+                 :item_2 36
+                 :item_3 139
+                 :item_4 63
+                 :item_5 116
+                 :item_neutral 300
+                 :kills 6
+                 :last_hits 391
+                 :leaver_status 0
+                 :match_id 5500629735
+                 :player_slot 132
+                 :xp_per_min 768.0}
+                {:account_id 9297930
+                 :assists 10
+                 :backpack_0 0
+                 :backpack_1 0
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 10
+                 :denies 0
+                 :gold_per_min 273.0
+                 :hero_id 7
+                 :item_0 180
+                 :item_1 40
+                 :item_2 73
+                 :item_3 1
+                 :item_4 43
+                 :item_5 108
+                 :item_neutral 289
+                 :kills 4
+                 :last_hits 71
+                 :leaver_status 0
+                 :match_id 5500629735
+                 :player_slot 0
+                 :xp_per_min 395.0}
+                {:account_id 93045428
+                 :assists 15
+                 :backpack_0 0
+                 :backpack_1 0
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 3
+                 :denies 2
+                 :gold_per_min 1076.0
+                 :hero_id 73
+                 :item_0 63
+                 :item_1 116
+                 :item_2 208
+                 :item_3 137
+                 :item_4 112
+                 :item_5 119
+                 :item_neutral 364
+                 :kills 15
+                 :last_hits 421
+                 :leaver_status 0
+                 :match_id 5500629735
+                 :player_slot 129
+                 :xp_per_min 870.0}
+                {:account_id 484350830
+                 :assists 16
+                 :backpack_0 0
+                 :backpack_1 0
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 9
+                 :denies 8
+                 :gold_per_min 421.0
+                 :hero_id 75
+                 :item_0 102
+                 :item_1 254
+                 :item_2 43
+                 :item_3 247
+                 :item_4 63
+                 :item_5 247
+                 :item_neutral 336
+                 :kills 11
+                 :last_hits 94
+                 :leaver_status 0
+                 :match_id 5500629735
+                 :player_slot 131
+                 :xp_per_min 614.0}
+                {:account_id 463297405
+                 :assists 9
+                 :backpack_0 0
+                 :backpack_1 0
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 1
+                 :denies 9
+                 :gold_per_min 597.0
+                 :hero_id 80
+                 :item_0 187
+                 :item_1 39
+                 :item_2 261
+                 :item_3 0
+                 :item_4 0
+                 :item_5 0
+                 :item_neutral 359
+                 :kills 6
+                 :last_hits 256
+                 :leaver_status 0
+                 :match_id 5503497365
+                 :player_slot 2
+                 :xp_per_min 755.0}
+                {:account_id 126123567
+                 :assists 12
+                 :backpack_0 0
+                 :backpack_1 0
+                 :backpack_2 188
+                 :backpack_3 nil
+                 :deaths 4
+                 :denies 1
+                 :gold_per_min 313.0
+                 :hero_id 9
+                 :item_0 100
+                 :item_1 180
+                 :item_2 75
+                 :item_3 102
+                 :item_4 36
+                 :item_5 39
+                 :item_neutral 288
+                 :kills 4
+                 :last_hits 39
+                 :leaver_status 0
+                 :match_id 5503497365
+                 :player_slot 1
+                 :xp_per_min 461.0}
+                {:account_id 200512
                  :assists 25
                  :backpack_0 42
                  :backpack_1 0
@@ -600,4 +540,64 @@
                  :leaver_status 0
                  :match_id 5500629735
                  :player_slot 3
-                 :xp_per_min 361.0}}}
+                 :xp_per_min 361.0}
+                {:account_id 174845600
+                 :assists 3
+                 :backpack_0 0
+                 :backpack_1 0
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 8
+                 :denies 26
+                 :gold_per_min 543.0
+                 :hero_id 95
+                 :item_0 145
+                 :item_1 36
+                 :item_2 116
+                 :item_3 63
+                 :item_4 244
+                 :item_5 170
+                 :item_neutral 361
+                 :kills 8
+                 :last_hits 229
+                 :leaver_status 0
+                 :match_id 5503497365
+                 :player_slot 128
+                 :xp_per_min 688.0}
+                {:account_id 198232222
+                 :assists 6
+                 :backpack_0 0
+                 :backpack_1 11
+                 :backpack_2 0
+                 :backpack_3 nil
+                 :deaths 5
+                 :denies 5
+                 :gold_per_min 449.0
+                 :hero_id 98
+                 :item_0 180
+                 :item_1 178
+                 :item_2 226
+                 :item_3 90
+                 :item_4 36
+                 :item_5 125
+                 :item_neutral 306
+                 :kills 1
+                 :last_hits 224
+                 :leaver_status 0
+                 :match_id 5503497365
+                 :player_slot 129
+                 :xp_per_min 505.0}}
+ [:additional-unit [:* [nil :ai_differentiator]]] #{{:ai_differentiator nil
+                                                     :backpack_0 0
+                                                     :backpack_1 0
+                                                     :backpack_2 0
+                                                     :backpack_3 nil
+                                                     :item_0 50
+                                                     :item_1 172
+                                                     :item_2 208
+                                                     :item_3 11
+                                                     :item_4 168
+                                                     :item_5 0
+                                                     :match_id 5503497365
+                                                     :player_slot 2
+                                                     :unitname "spirit_bear"}}}
