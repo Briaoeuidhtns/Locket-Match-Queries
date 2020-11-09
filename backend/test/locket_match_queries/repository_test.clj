@@ -2,6 +2,7 @@
   (:require
    [locket-match-queries.repository :as repo]
    [locket-match-queries.test.setup :as setup :refer [*system* *db*]]
+   [locket-match-queries.sample.matches :as sample.matches]
    [locket-match-queries.test.http-mocks :as http-mocks]
    [clojure.test :as t]
    [next.jdbc :as jdbc]
@@ -45,7 +46,7 @@
   (repo/populate-match-tables
     *db*
     (map #(<!! (api/get-match-data http-mocks/fake-key :match_id %))
-      [5500629735 #_(aghs buffs and silencer) 5503497365 #_(ld)]))
+      [sample.matches/with-buffs sample.matches/with-additional-units]))
   (match-snapshot
     ::matches
     (state-of *db* :match-table :pick-ban-entry :player-info :additional-unit)))
